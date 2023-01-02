@@ -179,5 +179,17 @@ public class Studente implements Serializable {
 		return "Studente [nome = \"" + nome + "\", cognome = \"" + cognome + "\", dataDiNascita = " + dataDiNascita.toString()
 				+ ", luogoDiNascita = \"" + luogoDiNascita + "\", classeFrequentata = " + classeFrequentata
 				+ ", anniDiRipetizione = " + (anniDiRipetizione == 0 ? "null]" : (anniDiRipetizione + "]"));
-	}	
+	}
+
+	/**
+	 * Compara gli attributi di questa istantaza e quella inserita da input e controlla se hanno valori uguali
+	 * 
+	 * @param altro istanza da comparare a questa
+	 * @return true se sono uguali, false altrimenti
+	 */
+	public boolean equals(Studente altro)
+	{
+		return nome.equals(altro.nome) && cognome.equals(altro.cognome) && dataDiNascita.equals(altro.dataDiNascita)
+			&& luogoDiNascita.equals(altro.luogoDiNascita) && classeFrequentata == altro.classeFrequentata && anniDiRipetizione == altro.anniDiRipetizione;
+	}
 }
