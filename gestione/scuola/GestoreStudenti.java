@@ -124,6 +124,6 @@ public class GestoreStudenti {
 	 */
 	public void caricaListaStudenti(String percorsoFileSalvataggio) throws FileNotFoundException, IOException, ClassNotFoundException
 	{
-		listaStudenti = gestoreSalvataggio.<Studente> deserializzaLista(percorsoFileSalvataggio);
+		listaStudenti = gestoreSalvataggio.<Studente>deserializzaLista(percorsoFileSalvataggio);
 	}
 }
