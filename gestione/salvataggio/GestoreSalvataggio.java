@@ -2,7 +2,7 @@
  * Classe GestoreSalvataggio, fornisce dei metodi per la serializzazione e deserializzazione degli oggetti,
  * attualmente solo per le ArrayList.
  * 
- * @version 1.0 (2-1-2023)
+ * @version 1.1 (2-1-2023)
  * @author Adnaan Juma
  */
 
@@ -50,6 +50,7 @@ public class GestoreSalvataggio {
     public <T> ArrayList<T> deserializzaLista(String percorsoFile) throws FileNotFoundException, IOException, ClassNotFoundException
     {
         ObjectInputStream stream = new ObjectInputStream(new FileInputStream(percorsoFile));
+        @SuppressWarnings("unchecked")
         ArrayList<T> lista = (ArrayList<T>)(stream.readObject());
         stream.close();
         return lista;
