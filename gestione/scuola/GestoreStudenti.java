@@ -47,6 +47,24 @@ public class GestoreStudenti {
 	public ArrayList<Studente> getListaStudenti() {
 		return new ArrayList<Studente>(listaStudenti);
 	}
+
+
+	public Studente[] cercaStudente(String nome, String cognome) throws StudenteNonTrovatoException
+	{
+		ArrayList<Studente> temp = new ArrayList<Studente>();
+
+		for (Studente st : listaStudenti) {
+			if (st.getNome().equals(nome) && st.getCognome().equals(cognome)) {
+				temp.add(st);
+			}
+		}
+
+		if (temp.size() == 0) {
+			throw new StudenteNonTrovatoException();
+		}
+
+		return temp.toArray(new Studente[0]);
+	}
 	
 	/**
 	 * Salva uno studente all'interno della lista facendo una copia
