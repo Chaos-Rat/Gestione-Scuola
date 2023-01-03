@@ -103,9 +103,9 @@ public class GestoreStudenti {
 	 * 
 	 * @param percorsoFileSalvataggio percorso del file su cui verra' serializzata la lista
 	 * @throws FileNotFoundException se: <ul><li>il file corrisponde a una cartella e non a un file vero e proprio</li>
-     * <li>non esiste e non e' possibile crearlo</li>
-     * <li>e' impossibile aprirlo per qualsiasi altra ragione</li></ul>
-     * @throws IOException se un errore di IO (Input/Output) occore in fase di scrittura dell'header dello stream
+	 * <li>non esiste e non e' possibile crearlo</li>
+	 * <li>e' impossibile aprirlo per qualsiasi altra ragione</li></ul>
+	 * @throws IOException se un errore di IO (Input/Output) occore in fase di scrittura dell'header dello stream
 	 */
 	public void salvaListaStudenti(String percorsoFileSalvataggio) throws FileNotFoundException, IOException
 	{
@@ -117,10 +117,10 @@ public class GestoreStudenti {
 	 * 
 	 * @param percorsoFileSalvataggio percorso del file da cui verra' deserializzata la lista
 	 * @throws FileNotFoundException se: <ul><li>il file non esiste</li>
-     * <li>il file corrisponde a una cartella e non a un file vero e proprio</li>
-     * <li>e' impossibile aprirlo per qualsiasi altra ragione</li></ul>
-     * @throws IOException se un errore di IO (Input/Output) occore in fase di lettura dell'header dello stream
-     * @throws ClassNotFoundException se non e' stato possibile trovare la lista all'interno del file
+	 * <li>il file corrisponde a una cartella e non a un file vero e proprio</li>
+	 * <li>e' impossibile aprirlo per qualsiasi altra ragione</li></ul>
+	 * @throws IOException se un errore di IO (Input/Output) occore in fase di lettura dell'header dello stream
+	 * @throws ClassNotFoundException se non e' stato possibile trovare la lista all'interno del file
 	 */
 	public void caricaListaStudenti(String percorsoFileSalvataggio) throws FileNotFoundException, IOException, ClassNotFoundException
 	{
