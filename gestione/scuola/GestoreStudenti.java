@@ -1,7 +1,7 @@
 /**
  * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso un gestore per il salvataggio
  * 
- * @version 1.1 (4-1-2023)
+ * @version 1.2 (4-1-2023)
  * @author Lorenzo Freccero
  * @author Adnaan Juma
  */
@@ -118,9 +118,14 @@ public class GestoreStudenti {
 	 */
 	public void eliminaStudente(Studente studente) throws StudenteNonTrovatoException
 	{
-		if (!listaStudenti.remove(studente)) {
-			throw new StudenteNonTrovatoException();
+		for (int i = 0; i < listaStudenti.size(); i++) {
+			if (studente.equals(listaStudenti.get(i))) {
+				listaStudenti.remove(i);
+				return;
+			}
 		}
+
+		throw new StudenteNonTrovatoException();
 	}
 	
 	/**
