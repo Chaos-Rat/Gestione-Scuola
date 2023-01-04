@@ -3,7 +3,7 @@
  * nome, cognome, data di nascita, luogo di nascita, classe frequentata e anni di ripetizione.
  * Implementa la classe <b>Serializable</b> ed e' quindi possibile serializzarla.
  * 
- * @version 1.2 (2-1-2023)
+ * @version 1.4 (4-1-2023)
  * @author Adnaan Juma
  */
 package gestione.scuola;
@@ -17,6 +17,19 @@ public class Studente implements Serializable {
 	private String luogoDiNascita;
 	private byte classeFrequentata, anniDiRipetizione;
 	private static final long serialVersionUID = -1880554790296497074L;
+
+	/**
+	 * Costruttore di default, inizializza tutti gli interi a zero, le stringe a stringhe vuote, e la data a 0000-01-01 (aaaa-mm-gg)
+	 */
+	public Studente()
+	{
+		nome = "";
+		cognome = "";
+		dataDiNascita = LocalDate.of(0,1,1);
+		luogoDiNascita = "";
+		classeFrequentata = 0;
+		anniDiRipetizione = 0;
+	}
 
 	/**
 	 * Costruttore con il compito di inizializzare tutte gli attributi con i valori inseriti da input
@@ -179,5 +192,17 @@ public class Studente implements Serializable {
 		return "Studente [nome = \"" + nome + "\", cognome = \"" + cognome + "\", dataDiNascita = " + dataDiNascita.toString()
 				+ ", luogoDiNascita = \"" + luogoDiNascita + "\", classeFrequentata = " + classeFrequentata
 				+ ", anniDiRipetizione = " + (anniDiRipetizione == 0 ? "null]" : (anniDiRipetizione + "]"));
-	}	
+	}
+
+	/**
+	 * Compara gli attributi di questa istantaza e quella inserita da input e controlla se hanno valori uguali
+	 * 
+	 * @param altro istanza da comparare a questa
+	 * @return true se sono uguali, false altrimenti
+	 */
+	public boolean equals(Studente altro)
+	{
+		return nome.equals(altro.nome) && cognome.equals(altro.cognome) && dataDiNascita.equals(altro.dataDiNascita)
+			&& luogoDiNascita.equals(altro.luogoDiNascita) && classeFrequentata == altro.classeFrequentata && anniDiRipetizione == altro.anniDiRipetizione;
+	}
 }
