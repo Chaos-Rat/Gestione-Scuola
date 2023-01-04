@@ -4,6 +4,7 @@
  * @version 1.3 (4-1-2023)
  * @author Adnaan Juma
  * @author Matteo Del Checcolo
+ * @author Lorenzo Freccero
  */
 
 package gestione.scuola;
@@ -23,7 +24,10 @@ public class Menu {
 		System.out.print("\033[H\033[2J"); // Pulisce lo schermo
 		System.out.flush();
 	}
-
+	
+	/*
+	 * Funzione Main
+	 */
 	public static void main(String[] args)
 	{
 		GestoreStudenti gestore = new GestoreStudenti();
@@ -41,6 +45,9 @@ public class Menu {
 			System.err.println("[ERRORE]: File di salvataggio corrotto!");
 		}
 
+		/*
+		 * 
+		 */
 		while (!chiudiProgramma) {
 
 			Scanner sc = new Scanner(System.in);
@@ -78,24 +85,27 @@ public class Menu {
 				case 1: { // Salva studente
 					Studente studente = new Studente();
 					
-					System.out.print(">Salva studente\n\n");
+					System.out.print(">Salva Studente\n\n");
 
-					System.out.print("\tInserisci il nome: ");
+					System.out.print("\tInserisci il Nome: ");
 					studente.setNome(sc.nextLine());
-					System.out.print("\tInserisci il cognome: ");
+					System.out.print("\tInserisci il Cognome: ");
 					studente.setCognome(sc.nextLine());
-					System.out.print("\tInserisci la data di nascita (aaaa-mm-gg): ");
+					System.out.print("\tInserisci la Data di Nascita (aaaa-mm-gg): ");
 					studente.setDataDiNascita(LocalDate.parse(sc.nextLine()));
-					System.out.print("\tInserisci il luogo di nascita: ");
+					System.out.print("\tInserisci il Luogo di Nascita: ");
 					studente.setLuogoDiNascita(sc.nextLine());
-					System.out.print("\tInserisci la classe Frequentata (max 127): ");
+					System.out.print("\tInserisci la Classe Frequentata (max 127): ");
 					studente.setClasseFrequentata(sc.nextByte());
 					sc.nextLine();
-					System.out.print("\tLo studente e' ripetente? (si/no): ");
+					System.out.print("\tInserisci la Sezione Frequentata (max 127): ");
+					studente.setSezioneFrequentata(sc.nextLine());
+					sc.nextLine();
+					System.out.print("\tLo Studente e' Ripetente? (si/no): ");
 
 					switch (sc.nextLine()) {
 						case "si":
-							System.out.print("\tQuanti anni ha dovuto ripetere? (max 127): ");
+							System.out.print("\tQuanti Anni ha Dovuto Ripetere? (max 127): ");
 							studente.setAnniDiRipetizione(sc.nextByte());
 							sc.nextLine();
 							break;
@@ -124,7 +134,7 @@ public class Menu {
 				case 2: { // Cerca studente
 					System.out.print(">Cerca studente\n\n");
 
-					System.out.print("\tInserisci il nome e il cognome dello/degli studente/studenti che vuoi cercare (ex. \"Marco Polo\"): ");
+					System.out.print("\tInserire il Nome e il Cognome dello/degli studente/studenti che desidera cercare (ex. \"Marco Polo\"): ");
 					String[] input = sc.nextLine().split(" ");
 
 					try {
@@ -135,7 +145,7 @@ public class Menu {
 						sc.nextLine();
 						cls();
 					} catch (StudenteNonTrovatoException exception) {
-						System.out.print("\nNessuno studente con tali credenziali trovato nella lista. ");
+						System.out.print("\nNessuno Studente con tali Credenziali Trovato nella Lista. ");
 						sc.nextLine();
 						cls();
 					}
@@ -145,7 +155,7 @@ public class Menu {
 				case 3: { // Modifica informazioni studente
 					System.out.print(">Modifica informazioni studente\n\n");
 
-					System.out.print("\tInserisci il nome e il cognome dello studente di cui vuoi modificare i dati (ex. \"Richard Wattson\"): ");
+					System.out.print("\tInserire il nome e il cognome dello studente di cui vuoi modificare i dati (ex. \"Richard Wattson\"): ");
 					String[] credenziali = sc.nextLine().split(" ");
 
 					try {
@@ -155,39 +165,45 @@ public class Menu {
 							String input = "";
 							Studente nuovoStudente = new Studente(risultato[0]);
 
-							System.out.print("\n\tStudente trovato! Se non desideri cambiare dei campi non inserire niente.\n\n");
+							System.out.print("\n\tStudente trovato! Se non si desidera cambiare un certo dato, lasicarlo vuoto.\n\n");
 							
-							System.out.print("\tInserisci il nuovo nome (vecchio nome: \"" + risultato[0].getNome() + "\"): ");
+							System.out.print("\tInserisci il Nuovo Nome (Vecchio Nome: \"" + risultato[0].getNome() + "\"): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setNome(input);
 							}
 
-							System.out.print("\tInserisci il nuovo cognome (vecchio cognome: \"" + risultato[0].getCognome() + "\"): ");
+							System.out.print("\tInserisci il Nuovo Cognome (Vecchio Cognome: \"" + risultato[0].getCognome() + "\"): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setCognome(input);
 							}
 
-							System.out.print("\tInserisci la nuova data di nascita (vecchia data di nascita: \"" + risultato[0].getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
+							System.out.print("\tInserisci la Nuova Data di Nascita (Vecchia Data di Nascita: \"" + risultato[0].getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setDataDiNascita(LocalDate.parse(input));
 							}
 							
-							System.out.print("\tInserisci il nuovo luogo di nascita (vecchio luogo di nascita: \"" + risultato[0].getLuogoDiNascita() + "\"): ");
+							System.out.print("\tInserisci il Nuovo Luogo di Nascita (Vecchio Luogo di Nascita: \"" + risultato[0].getLuogoDiNascita() + "\"): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setLuogoDiNascita(input);
 							}
 
-							System.out.print("\tInserisci la nuova classe frequenta (vecchia classe frequentata: \"" + risultato[0].getClasseFrequentata() + "\") (max 127): ");
+							System.out.print("\tInserisci la Nuova Classe Frequenta (Vecchia Classe Frequentata: \"" + risultato[0].getClasseFrequentata() + "\") (max 127): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setClasseFrequentata(Byte.parseByte(input));
 							}
 							
-							System.out.print("\tInserisci i nuovi anni di ripetizione (vecchi anni di ripetizione: \"" + risultato[0].getAnniDiRipetizione() + "\") (max 127) (se lo studente non e' mai stato bocciato inserire 0): ");
+							System.out.print("\tInserisci la Nuova Sezione Frequentata (Vecchia Sezione Frequentata: \"" + risultato[0].getSezioneFrequentata() + "\"): ");
+							input = sc.nextLine();
+							if (!input.isEmpty()) {
+								nuovoStudente.setSezioneFrequentata(input);
+							}
+							
+							System.out.print("\tInserisci i Nuovi Anni di Ripetizione (Vecchi Anni di Ripetizione: \"" + risultato[0].getAnniDiRipetizione() + "\") (max 127) (se lo studente non e' mai stato bocciato inserire 0): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setAnniDiRipetizione(Byte.parseByte(input));
@@ -210,7 +226,7 @@ public class Menu {
 								System.out.print("\n\t[" + i + "] " + risultato[i].toString() + "\n");
 							}
 
-							System.out.print("\nQuale dei " + risultato.length + " vuoi modificare? ");
+							System.out.print("\nQuale dei " + risultato.length + " Studenti vuole Modificare? ");
 							
 							while (scelta2 < 0 || scelta2 > risultato.length - 1) {
 								try {
@@ -231,45 +247,51 @@ public class Menu {
 							String input = "";
 							Studente nuovoStudente = new Studente(risultato[scelta2]);
 
-							System.out.print("\n\tSe non desideri cambiare dei campi non inserire niente.\n\n");
+							System.out.print("\n\tSe non si desidera cambiare un certo dato, lasicarlo vuoto.\n\n");
 							
-							System.out.print("\tInserisci il nuovo nome (vecchio nome: \"" + risultato[scelta2].getNome() + "\"): ");
+							System.out.print("\tInserisci il Nuovo Nome (Vecchio Nome: \"" + risultato[0].getNome() + "\"): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setNome(input);
 							}
 
-							System.out.print("\tInserisci il nuovo cognome (vecchio cognome: \"" + risultato[scelta2].getCognome() + "\"): ");
+							System.out.print("\tInserisci il Nuovo Cognome (Vecchio Cognome: \"" + risultato[0].getCognome() + "\"): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setCognome(input);
 							}
 
-							System.out.print("\tInserisci la nuova data di nascita (vecchia data di nascita: \"" + risultato[scelta2].getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
+							System.out.print("\tInserisci la Nuova Data di Nascita (Vecchia Data di Nascita: \"" + risultato[0].getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setDataDiNascita(LocalDate.parse(input));
 							}
 							
-							System.out.print("\tInserisci il nuovo luogo di nascita (vecchio luogo di nascita: \"" + risultato[scelta2].getLuogoDiNascita() + "\"): ");
+							System.out.print("\tInserisci il Nuovo Luogo di Nascita (Vecchio Luogo di Nascita: \"" + risultato[0].getLuogoDiNascita() + "\"): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setLuogoDiNascita(input);
 							}
 
-							System.out.print("\tInserisci la nuova classe frequenta (vecchia classe frequentata: \"" + risultato[scelta2].getClasseFrequentata() + "\") (max 127): ");
+							System.out.print("\tInserisci la Nuova Classe Frequenta (Vecchia Classe Frequentata: \"" + risultato[0].getClasseFrequentata() + "\") (max 127): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setClasseFrequentata(Byte.parseByte(input));
 							}
 							
-							System.out.print("\tInserisci i nuovi anni di ripetizione (vecchi anni di ripetizione: \"" + risultato[scelta2].getAnniDiRipetizione() + "\") (max 127) (se lo studente non e' mai stato bocciato inserire 0): ");
+							System.out.print("\tInserisci la Nuova Sezione Frequentata (Vecchia Sezione Frequentata: \"" + risultato[0].getSezioneFrequentata() + "\"): ");
+							input = sc.nextLine();
+							if (!input.isEmpty()) {
+								nuovoStudente.setSezioneFrequentata(input);
+							}
+							
+							System.out.print("\tInserisci i Nuovi Anni di Ripetizione (Vecchi Anni di Ripetizione: \"" + risultato[0].getAnniDiRipetizione() + "\") (max 127) (se lo studente non e' mai stato bocciato inserire 0): ");
 							input = sc.nextLine();
 							if (!input.isEmpty()) {
 								nuovoStudente.setAnniDiRipetizione(Byte.parseByte(input));
 							}
 
-							gestore.modificaStudente(risultato[scelta2], nuovoStudente); // Puo tirare StudenteNonTrovatoException ma non accradra' mai in questo punto del codice
+							gestore.modificaStudente(risultato[0], nuovoStudente); // Puo tirare StudenteNonTrovatoException ma non accradra' mai in questo punto del codice
 							System.out.print("\nInformazioni studente modificate con successo!");
 						
 							gestore.salvaListaStudenti(pathSalvataggio);
@@ -282,7 +304,7 @@ public class Menu {
 						System.out.print("\nNessuno studente con tali credenziali trovato nella lista. ");
 						sc.nextLine();
 						cls();
-					} catch (Exception exception) { // TODO: Espandere il catch con le eccezioni specifiche
+					} catch (Exception exception){
 						sc.nextLine();
 						cls();
 					}
@@ -301,7 +323,7 @@ public class Menu {
 						if (risultato.length == 1) {
 							System.out.print("\n\tStudente trovato: \n\t" + risultato[0].toString() + "\n");
 
-							System.out.print("\n\tVuoi davvero eliminarlo dalla lista? (si no): ");
+							System.out.print("\n\tVuole davvero eliminarlo dalla lista? (si/no): ");
 
 							switch (sc.nextLine()) {
 								case "si":
@@ -344,7 +366,7 @@ public class Menu {
 								}
 							}
 
-							System.out.print("\n\tVuoi davvero eliminarlo dalla lista? (si no): ");
+							System.out.print("\n\tVuole davvero eliminare lo studente dalla lista? (si/no): ");
 
 							switch (sc.nextLine()) {
 								case "si":

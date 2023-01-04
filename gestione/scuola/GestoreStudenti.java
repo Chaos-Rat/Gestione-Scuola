@@ -2,8 +2,8 @@
  * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso un gestore per il salvataggio
  * 
  * @version 1.2 (4-1-2023)
- * @author Lorenzo Freccero
  * @author Adnaan Juma
+ * @author Lorenzo Freccero
  */
 
 package gestione.scuola;
@@ -126,6 +126,63 @@ public class GestoreStudenti {
 		}
 
 		throw new StudenteNonTrovatoException();
+	}
+	
+	/*
+	 * Mostra a schermo una lista di tutti gli studenti di una certa classe e sezione
+	 */
+	public void mostraClasse(byte classe, String sezione)
+	{
+		int n = 0;
+		
+		while(n < listaStudenti.size()) {
+			if(listaStudenti.get(n).getClasseFrequentata() == classe && listaStudenti.get(n).getSezioneFrequentata().equals(sezione))
+			{
+				System.out.println(listaStudenti.get(n).getNome() + " " + listaStudenti.get(n).getCognome());
+				System.out.println(listaStudenti.get(n).getDataDiNascita());
+				System.out.println(listaStudenti.get(n).getLuogoDiNascita());
+				System.out.println(listaStudenti.get(n).getClasseFrequentata() + listaStudenti.get(n).getSezioneFrequentata());
+				System.out.println("Anni di Ripetizione: " + listaStudenti.get(n).getAnniDiRipetizione());
+			}
+			
+			n++;
+		}
+	}
+	
+	/*
+	 * Elimina un intera classe di studenti
+	 */
+	public void eliminaClasse(byte classe, String sezione)
+	{
+		int n = 0;
+		
+		while(n < listaStudenti.size()) {
+			if(listaStudenti.get(n).getClasseFrequentata() == classe && listaStudenti.get(n).getSezioneFrequentata().equals(sezione))
+			{
+				listaStudenti.remove(n);
+			}
+			
+			n++;
+		}
+	}
+	
+	/*
+	 * Fa avanzare di un anno tutti gli studenti della scuola, se uno studente si trova in 5a, lo rimuove dall'elenco direttamente
+	 */
+	public void promuoviStudenti()
+	{
+		int n = 0;
+		
+		while(n < listaStudenti.size()) {
+			if(listaStudenti.get(n).getClasseFrequentata() == 5) {
+				listaStudenti.remove(n);
+			}
+			else {
+				listaStudenti.get(n).setClasseFrequentata((byte) (listaStudenti.get(n).getClasseFrequentata() + 1));
+				n++;
+			}
+		}
+		
 	}
 	
 	/**

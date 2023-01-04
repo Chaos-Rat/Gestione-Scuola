@@ -5,6 +5,7 @@
  * 
  * @version 1.4 (4-1-2023)
  * @author Adnaan Juma
+ * @author Lorenzo Freccero
  */
 package gestione.scuola;
 
@@ -14,9 +15,10 @@ import java.time.LocalDate;
 public class Studente implements Serializable {
 	private String nome, cognome;
 	private LocalDate dataDiNascita;
-	private String luogoDiNascita;
+	private String luogoDiNascita, sezioneFrequentata;
 	private byte classeFrequentata, anniDiRipetizione;
 	private static final long serialVersionUID = -1880554790296497074L;
+	private boolean bocciato;
 
 	/**
 	 * Costruttore di default, inizializza tutti gli interi a zero, le stringe a stringhe vuote, e la data a 0000-01-01 (aaaa-mm-gg)
@@ -28,7 +30,9 @@ public class Studente implements Serializable {
 		dataDiNascita = LocalDate.of(0,1,1);
 		luogoDiNascita = "";
 		classeFrequentata = 0;
+		sezioneFrequentata = "";
 		anniDiRipetizione = 0;
+		bocciato = false;
 	}
 
 	/**
@@ -41,14 +45,16 @@ public class Studente implements Serializable {
 	 * @param classeFrequentata classe frequentata dallo studente
 	 * @param anniDiRipetizione anni di ripetizione dello studente nel caso in cui sia stato bocciato. In caso non sia mai stato bocciato ha valore <i>null</i>
 	 */
-	public Studente(String nome, String cognome, LocalDate dataDiNascita, String luogoDiNascita, byte classeFrequentata, byte anniDiRipetizione)
+	public Studente(String nome, String cognome, LocalDate dataDiNascita, String luogoDiNascita, byte classeFrequentata, String sezioneFrequentata, byte anniDiRipetizione)
 	{
 		this.nome = nome;
 		this.cognome = cognome;
 		this.dataDiNascita = dataDiNascita;
 		this.luogoDiNascita = luogoDiNascita;
 		this.classeFrequentata = classeFrequentata;
+		this.sezioneFrequentata = sezioneFrequentata;
 		this.anniDiRipetizione = anniDiRipetizione;
+		this.bocciato = false;
 	}
 
 	/**
@@ -63,6 +69,7 @@ public class Studente implements Serializable {
 		dataDiNascita = altro.dataDiNascita;
 		luogoDiNascita = altro.luogoDiNascita;
 		classeFrequentata = altro.classeFrequentata;
+		sezioneFrequentata = altro.sezioneFrequentata;
 		anniDiRipetizione = altro.anniDiRipetizione;
 	}
 
@@ -165,6 +172,24 @@ public class Studente implements Serializable {
 	{
 		this.classeFrequentata = classeFrequentata;
 	}
+	
+	/**
+	 * Getter per l'attributo sezioneFrequentata
+	 * 
+	 * @return valore attributo sezioneFrequentata
+	 */
+	public String getSezioneFrequentata() {
+		return sezioneFrequentata;
+	}
+	
+	/**
+	 * Setter per l'attributo sezioneFrequentata
+	 * 
+	 * @param nome valore da assegnare all'attributo sezioneFrequentata
+	 */
+	public void setSezioneFrequentata(String sezioneFrequentata) {
+		this.sezioneFrequentata = sezioneFrequentata;
+	}
 
 	/**
 	 * Getter per l'attributo anniDiRipetizione
@@ -185,13 +210,31 @@ public class Studente implements Serializable {
 	{
 		this.anniDiRipetizione = anniDiRipetizione;
 	}
+	
+	/**
+	 * Getter per l'attributo bocciato
+	 * 
+	 * @return valore attributo bocciato
+	 */
+	public boolean isBocciato() {
+		return bocciato;
+	}
+	
+	/**
+	 * Setter per l'attributo bocciato
+	 * 
+	 * @param nome valore da assegnare all'attributo bocciato
+	 */
+	public void setBocciato(boolean bocciato) {
+		this.bocciato = bocciato;
+	}
 
 	@Override
 	public String toString()
 	{
 		return "Studente [nome = \"" + nome + "\", cognome = \"" + cognome + "\", dataDiNascita = " + dataDiNascita.toString()
 				+ ", luogoDiNascita = \"" + luogoDiNascita + "\", classeFrequentata = " + classeFrequentata
-				+ ", anniDiRipetizione = " + (anniDiRipetizione == 0 ? "null]" : (anniDiRipetizione + "]"));
+				+ "\", classeFrequentata = " + sezioneFrequentata + ", anniDiRipetizione = " + (anniDiRipetizione == 0 ? "null]" : (anniDiRipetizione + "]"));
 	}
 
 	/**
@@ -203,6 +246,6 @@ public class Studente implements Serializable {
 	public boolean equals(Studente altro)
 	{
 		return nome.equals(altro.nome) && cognome.equals(altro.cognome) && dataDiNascita.equals(altro.dataDiNascita)
-			&& luogoDiNascita.equals(altro.luogoDiNascita) && classeFrequentata == altro.classeFrequentata && anniDiRipetizione == altro.anniDiRipetizione;
+			&& luogoDiNascita.equals(altro.luogoDiNascita) && classeFrequentata == altro.classeFrequentata && sezioneFrequentata.equals(altro.sezioneFrequentata) && anniDiRipetizione == altro.anniDiRipetizione;
 	}
 }
