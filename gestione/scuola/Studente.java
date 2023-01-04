@@ -3,7 +3,7 @@
  * nome, cognome, data di nascita, luogo di nascita, classe frequentata e anni di ripetizione.
  * Implementa la classe <b>Serializable</b> ed e' quindi possibile serializzarla.
  * 
- * @version 1.2 (2-1-2023)
+ * @version 1.3 (4-1-2023)
  * @author Adnaan Juma
  */
 package gestione.scuola;
@@ -17,6 +17,19 @@ public class Studente implements Serializable {
 	private String luogoDiNascita;
 	private byte classeFrequentata, anniDiRipetizione;
 	private static final long serialVersionUID = -1880554790296497074L;
+
+	/**
+	 * Costruttore di default, inizializza tutti gli interi a zero e le stringe a stringhe vuote
+	 */
+	public Studente()
+	{
+		nome = "";
+		cognome = "";
+		dataDiNascita = LocalDate.of(0,0,0);
+		luogoDiNascita = "";
+		classeFrequentata = 0;
+		anniDiRipetizione = 0;
+	}
 
 	/**
 	 * Costruttore con il compito di inizializzare tutte gli attributi con i valori inseriti da input

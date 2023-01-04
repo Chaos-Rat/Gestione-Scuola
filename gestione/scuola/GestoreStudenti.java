@@ -1,7 +1,7 @@
 /**
  * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso un gestore per il salvataggio
  * 
- * @version 1.0
+ * @version 1.1 (4-1-2023)
  * @author Lorenzo Freccero
  * @author Adnaan Juma
  */
@@ -48,14 +48,21 @@ public class GestoreStudenti {
 		return new ArrayList<Studente>(listaStudenti);
 	}
 
-
+	/**
+	 * Cerca gli studenti all'interno della lista che hanno tale nome e cognome li ritorna
+	 * 
+	 * @param nome nome dello/degli studente/studenti da cercare
+	 * @param cognome cognome dello/degli studente/studenti da cercare
+	 * @return array con le copie delle istanze degli studenti trovate
+	 * @throws StudenteNonTrovatoException nessuno studente possiede tale nome e cognome
+	 */
 	public Studente[] cercaStudente(String nome, String cognome) throws StudenteNonTrovatoException
 	{
 		ArrayList<Studente> temp = new ArrayList<Studente>();
 
-		for (Studente st : listaStudenti) {
-			if (st.getNome().equals(nome) && st.getCognome().equals(cognome)) {
-				temp.add(st);
+		for (Studente studente : listaStudenti) {
+			if (studente.getNome().equals(nome) && studente.getCognome().equals(cognome)) {
+				temp.add(new Studente(studente));
 			}
 		}
 
@@ -88,14 +95,14 @@ public class GestoreStudenti {
 	 * e poi li sovrascrive con quelli dell'altro studente passato da input
 	 * 
 	 * @param vecchioStudente studente da ricercare all'interno della lista
-	 * @param nuovoStudente studente da sovrascrivere a quella trovata
+	 * @param nuovoStudente studente da sovrascrivere a quello trovato
 	 * @throws StudenteNonTrovatoException se vecchioStudente non e' stato trovato nella lista degli studenti
 	 */
 	public void modificaStudente(Studente vecchioStudente, Studente nuovoStudente) throws StudenteNonTrovatoException
 	{	
-		for (Studente studente : listaStudenti) {
-			if (studente.equals(vecchioStudente)) {
-				studente = new Studente(nuovoStudente);
+		for (int i = 0; i < listaStudenti.size(); i++) {
+			if (vecchioStudente.equals(listaStudenti.get(i))) {
+				listaStudenti.set(i, new Studente(nuovoStudente));
 				return;
 			}
 		}
