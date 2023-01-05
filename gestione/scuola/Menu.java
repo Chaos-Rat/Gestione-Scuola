@@ -19,7 +19,7 @@ public class Menu {
 	/**
 	 * Pulisce la console
 	 */
-	public static void cls()
+	private static void cls()
 	{
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
@@ -27,11 +27,130 @@ public class Menu {
 
 	/**
 	 * Stampa un messaggio di avvertimento e attende il premersi del tasto invio da console
+	 * 
+	 * @param sc istanza dello scanner attualmente in uso
 	 */
-	public static void attendiInvio(Scanner sc)
+	private static void attendiInvio(Scanner sc)
 	{
 		System.out.print("\nPremere invio per tornare al menu principale...");
 		sc.nextLine();
+	}
+
+	/**
+	 * Ottiene le nuove credenziali di uno studente partendo da uno di base e ritorna una nuova istanza di <code>Studente</code> con esse.
+	 * <b>Da utilizzare per la modifica delle informazioni studente (opzione menu 3)</b>
+	 * 
+	 * @param base studente con le credenziali che si vogliono cambiare
+	 * @param sc istanza dello scanner attualmente in uso
+	 * @param formatoInvalido stringa di errore da stampare in caso l'utente inserisca un input sbagliato
+	 * @return istanza di <code>Studente</code> con le credenziali aggiornate
+	 */
+	private static Studente ottieniNuoveCredenziali(Studente base, Scanner sc, String formatoInvalido)
+	{
+		String input = "";
+		boolean inputValido;
+
+		Studente nuovoStudente = new Studente(base);
+		
+		System.out.print("\tInserire il nuovo nome (vecchio nome: \"" + nuovoStudente.getNome() + "\"): ");
+		input = sc.nextLine();
+		if (!input.isEmpty()) {
+			nuovoStudente.setNome(input);
+		}
+
+		System.out.print("\tInserire il nuovo cognome (vecchio cognome: \"" + nuovoStudente.getCognome() + "\"): ");
+		input = sc.nextLine();
+		if (!input.isEmpty()) {
+			nuovoStudente.setCognome(input);
+		}
+
+		System.out.print("\tInserire la nuova data di nascita (vecchia data di nascita: \"" + nuovoStudente.getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
+		do {
+			try {
+				input = sc.nextLine();
+				if (input.isEmpty()) {
+					break;
+				}
+				nuovoStudente.setDataDiNascita(LocalDate.parse(input));
+				inputValido = true;
+			} catch (DateTimeParseException exception) {
+				System.out.print(formatoInvalido + "\n\t");
+				inputValido = false;
+			}
+		} while (!inputValido);
+		
+		System.out.print("\tInserire il nuovo luogo di nascita (vecchio luogo di nascita: \"" + nuovoStudente.getLuogoDiNascita() + "\"): ");
+		input = sc.nextLine();
+		if (!input.isEmpty()) {
+			nuovoStudente.setLuogoDiNascita(input);
+		}
+
+		System.out.print("\tInserire la nuova classe frequentata (vecchia classe frequentata: \"" + nuovoStudente.getClasseFrequentata().toString() + "\") (esempio: 3cif): ");
+		do {
+			try {
+				input = sc.nextLine();
+				if (input.isEmpty()) {
+					break;
+				}
+				nuovoStudente.setClasseFrequentata(Classe.parse(input));
+				inputValido = true;
+			} catch (FormatoClasseException exception) {
+				System.out.print(formatoInvalido + " (Suggerimento: il numero massimo per l'anno della classe e' 127)\n\t");
+				inputValido = false;
+			}
+		} while (!inputValido);
+		
+		System.out.print("\tInserire i nuovi anni di ripetizione (vecchi anni di ripetizione: \"" + (nuovoStudente.getAnniDiRipetizione() == 0 ? "null" : nuovoStudente.getAnniDiRipetizione()) + "\", se lo studente non e' mai stato bocciato inserire 0): ");
+		do {
+			try {
+				input = sc.nextLine();
+				if (input.isEmpty()) {
+					break;
+				}
+				nuovoStudente.setAnniDiRipetizione(Byte.parseByte(input));
+				inputValido = true;
+			} catch (NumberFormatException exception) {
+				System.out.print(formatoInvalido + " (Suggerimento: il numero massimo di anni e' 127)\n\t");
+				inputValido = false;
+			}
+		} while (!inputValido);
+
+		return nuovoStudente;
+	}
+
+	/**
+	 * Chiede all'utente se vuole salvare la lista degli studenti nel file di salvataggio.
+	 * <b>Da utilizzare con quelle azioni da menu (esempio: [1] salva studente) che modificano la lista degli studenti del gestore</b>
+	 * 
+	 * @param gestore istanza di <code>GestoreStudenti</code> attualmente in uso
+	 * @param pathSalvataggio percorso del file di salvataggio
+	 * @param sc istanza dello scanner attualmente in uso
+	 * @param formatoInvalido stringa di errore da stampare in caso l'utente inserisca un input sbagliato
+	 * @throws FileNotFoundException se: <ul><li>il file corrisponde a una cartella e non a un file vero e proprio</li>
+	 * <li>non esiste e non e' possibile crearlo</li>
+	 * <li>e' impossibile aprirlo per qualsiasi altra ragione</li></ul>
+	 * @throws IOException se un errore di IO (Input/Output) occore in fase di scrittura dell'header dello stream
+	 */
+	private static void richiediSalvataggio(GestoreStudenti gestore, String pathSalvataggio, Scanner sc, String formatoInvalido) throws FileNotFoundException, IOException
+	{
+		boolean inputValido = false;
+
+		System.out.print("Desideri salvare la lista degli studenti sul file di salvataggio? (si/no): ");
+		do {
+			switch (sc.nextLine()) {
+				case "si":
+					gestore.salvaListaStudenti(pathSalvataggio);
+					System.out.println("La lista e' stata salvata correttamente!");
+					inputValido = true;
+					break;
+				case "no":
+					inputValido = true;
+					break;
+				default:
+					System.out.println(formatoInvalido);
+					inputValido = false;
+			}
+		} while (!inputValido);
 	}
 	
 	/**
@@ -44,9 +163,9 @@ public class Menu {
 		GestoreStudenti gestore = new GestoreStudenti();
 		String pathSalvataggio = "lista.bin";
 		boolean chiudiProgramma = false;
-		boolean inputValido = false;
+		boolean inputValido = false; // serve determinare se i vari do while di verifica input nel codice continuino o no
 		Scanner sc = new Scanner(System.in);
-		int scelta = 0;
+		int scelta = 0; // serve a immagizzinare l'input laddove e' presente un menu numerato
 
 		/* Stringhe per gli errori */
 		final String formatoInvalido = "Input inserito invalido, si prega di seguire il formato corretto e di reinserirlo";
@@ -57,7 +176,7 @@ public class Menu {
 		/* Caricamento in fase di avvio */
 		try {
 			gestore.caricaListaStudenti(pathSalvataggio);
-			System.out.println("Attenzione, la lista degli studenti e' stata caricata dal file di salvataggio.");
+			System.out.println("Avvertimento: la lista degli studenti e' stata caricata dal file di salvataggio con successo.");
 		} catch (FileNotFoundException exception) {
 			System.out.println("Attenzione, il file di salvataggio non e' presente e non verra' quindi caricata la lista.");
 		} catch (IOException exception) {
@@ -77,13 +196,15 @@ public class Menu {
 			+ "\n[6]: Visualizza classe"
 			+ "\n[7]: Elimina classe"
 			+ "\n[8]: Promuovi studenti"
-			+ "\n[9]: Chiudi il programma\n\n");
+			+ "\n[9]: Salva lista studenti"
+			+ "\n[10]: Carica lista studenti"
+			+ "\n[11]: Chiudi il programma\n\n");
 
 			do {
 				try {
 					scelta = Integer.parseInt(sc.nextLine());
 
-					if (scelta < 1 || scelta > 9) {
+					if (scelta < 1 || scelta > 11) {
 						throw new NumberFormatException();
 					}
 
@@ -115,7 +236,7 @@ public class Menu {
 							studente.setDataDiNascita(LocalDate.parse(sc.nextLine()));
 							inputValido = true;
 						} catch (DateTimeParseException exception) {
-							System.out.println(formatoInvalido);
+							System.out.print(formatoInvalido + "\n\t");
 							inputValido = false;
 						}
 					} while (!inputValido);
@@ -129,7 +250,7 @@ public class Menu {
 							studente.setClasseFrequentata(Classe.parse(sc.nextLine()));
 							inputValido = true;
 						} catch (FormatoClasseException exception) {
-							System.out.println(formatoInvalido + " (Suggerimento: il numero massimo per l'anno della classe e' 127)");
+							System.out.print(formatoInvalido + " (Suggerimento: il numero massimo per l'anno della classe e' 127)\n\t");
 							inputValido = false;
 						}
 					} while (!inputValido);
@@ -144,7 +265,7 @@ public class Menu {
 										studente.setAnniDiRipetizione(Byte.parseByte(sc.nextLine()));
 										inputValido = true;
 									} catch (NumberFormatException exception) {
-										System.out.println(formatoInvalido + " (Suggerimento: il numero massimo di anni e' 127)");
+										System.out.print(formatoInvalido + " (Suggerimento: il numero massimo di anni e' 127)\n\t");
 										inputValido = false;
 									}
 								} while (!inputValido);
@@ -164,23 +285,7 @@ public class Menu {
 					try {
 						gestore.salvaStudente(studente);
 						System.out.println("\nStudente inserito nella lista con successo!");
-						
-						System.out.print("Desideri salvare la lista degli studenti sul file di salvataggio? (si/no): ");
-						do {
-							switch (sc.nextLine()) {
-								case "si":
-									gestore.salvaListaStudenti(pathSalvataggio);
-									System.out.println("La lista e' stata salvata correttamente!");
-									inputValido = true;
-									break;
-								case "no":
-									inputValido = true;
-									break;
-								default:
-									System.out.println(formatoInvalido);
-									inputValido = false;
-							}
-						} while (!inputValido);
+						richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
 					} catch (StudenteGiaEsistenteException exception) {
 						System.out.println("\nAttenzione lo studente e' gia' stato inserito nella lista precedentemente e non verra inserito!");
 					} catch (FileNotFoundException exception) {
@@ -193,8 +298,7 @@ public class Menu {
 					cls();
 
 					break;
-				}
-				case 2: { // Cerca studente
+				} case 2: { // Cerca studente
 					System.out.print(">Cerca studente\n\n");
 
 					String nome, cognome;
@@ -217,10 +321,10 @@ public class Menu {
 					cls();
 
 					break;
-				}
-				case 3: { // Modifica informazioni studente
+				} case 3: { // Modifica informazioni studente
 					System.out.print(">Modifica informazioni studente\n\n");
 
+					/* Ricerca */
 					String nome, cognome;
 
 					System.out.print("\tInserire il nome dello studente i quali dati si desiderano modificare: ");
@@ -229,80 +333,18 @@ public class Menu {
 					System.out.print("\tInserire il cognome dello studente i quali dati si desiderano modificare: ");
 					cognome = sc.nextLine();
 
+					/* Ottenimento informazioni */
 					try {
 						Studente[] risultato = gestore.cercaStudente(nome, cognome);
 						Studente nuovoStudente;
 						
 						if (risultato.length == 1) {
 							scelta = 0;
-							nuovoStudente = new Studente(risultato[0]);
 							
-							System.out.print("\nStudente trovato! Se non si desidera cambiare un certo campo, lasicarlo vuoto (premere direttamente invio).\n\n");
+							System.out.print("\nStudente trovato! Se non si desidera cambiare un certo campo, lasciarlo vuoto (premere direttamente invio).\n\n");
 							
-							String input = "";
+							nuovoStudente = ottieniNuoveCredenziali(risultato[0], sc, formatoInvalido);
 							
-							System.out.print("\tInserire il nuovo nome (vecchio nome: \"" + nuovoStudente.getNome() + "\"): ");
-							input = sc.nextLine();
-							if (!input.isEmpty()) {
-								nuovoStudente.setNome(input);
-							}
-
-							System.out.print("\tInserire il nuovo cognome (vecchio cognome: \"" + nuovoStudente.getCognome() + "\"): ");
-							input = sc.nextLine();
-							if (!input.isEmpty()) {
-								nuovoStudente.setCognome(input);
-							}
-
-							System.out.print("\tInserire la nuova data di nascita (vecchia data di nascita: \"" + nuovoStudente.getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
-							do {
-								try {
-									input = sc.nextLine();
-									if (input.isEmpty()) {
-										break;
-									}
-									nuovoStudente.setDataDiNascita(LocalDate.parse(input));
-									inputValido = true;
-								} catch (DateTimeParseException exception) {
-									System.out.println(formatoInvalido);
-									inputValido = false;
-								}
-							} while (!inputValido);
-							
-							System.out.print("\tInserire il nuovo luogo di nascita (vecchio luogo di nascita: \"" + nuovoStudente.getLuogoDiNascita() + "\"): ");
-							input = sc.nextLine();
-							if (!input.isEmpty()) {
-								nuovoStudente.setLuogoDiNascita(input);
-							}
-							
-							System.out.print("\tInserire la nuova classe frequentata (vecchia classe frequentata: \"" + nuovoStudente.getClasseFrequentata().toString() + "\") (esempio: 3cif): ");
-							do {
-								try {
-									input = sc.nextLine();
-									if (input.isEmpty()) {
-										break;
-									}
-									nuovoStudente.setClasseFrequentata(Classe.parse(sc.nextLine()));
-									inputValido = true;
-								} catch (FormatoClasseException exception) {
-									System.out.println(formatoInvalido + " (Suggerimento: il numero massimo per l'anno della classe e' 127)");
-									inputValido = false;
-								}
-							} while (!inputValido);
-							
-							System.out.print("\tInserire i nuovi anni di ripetizione (vecchi anni di ripetizione: \"" + (nuovoStudente.getAnniDiRipetizione() == 0 ? "null" : risultato[0].getAnniDiRipetizione()) + "\", se lo studente non e' mai stato bocciato inserire 0): ");
-							do {
-								try {
-									input = sc.nextLine();
-									if (input.isEmpty()) {
-										break;
-									}
-									nuovoStudente.setAnniDiRipetizione(Byte.parseByte(input));
-									inputValido = true;
-								} catch (NumberFormatException exception) {
-									System.out.println(formatoInvalido + " (Suggerimento: il numero massimo di anni e' 127)");
-									inputValido = false;
-								}
-							} while (!inputValido);
 						} else {
 							System.out.print("\nPiu' di uno studente trovato!\n");
 
@@ -327,95 +369,15 @@ public class Menu {
 								}
 							} while (!inputValido);
 
-							nuovoStudente = new Studente(risultato[scelta]);
+							System.out.print("\nSe non si desidera cambiare un certo campo, lasciarlo vuoto (premere direttamente invio).\n\n");
 
-							System.out.print("\nSe non si desidera cambiare un certo campo, lasicarlo vuoto (premere direttamente invio).\n\n");
-							
-							String input = "";
-							
-							System.out.print("\tInserire il nuovo nome (vecchio nome: \"" + nuovoStudente.getNome() + "\"): ");
-							input = sc.nextLine();
-							if (!input.isEmpty()) {
-								nuovoStudente.setNome(input);
-							}
-
-							System.out.print("\tInserire il nuovo cognome (vecchio cognome: \"" + nuovoStudente.getCognome() + "\"): ");
-							input = sc.nextLine();
-							if (!input.isEmpty()) {
-								nuovoStudente.setCognome(input);
-							}
-
-							System.out.print("\tInserire la nuova data di nascita (vecchia data di nascita: \"" + nuovoStudente.getDataDiNascita().toString() + "\") (aaaa-mm-gg): ");
-							do {
-								try {
-									input = sc.nextLine();
-									if (input.isEmpty()) {
-										break;
-									}
-									nuovoStudente.setDataDiNascita(LocalDate.parse(input));
-									inputValido = true;
-								} catch (DateTimeParseException exception) {
-									System.out.println(formatoInvalido);
-									inputValido = false;
-								}
-							} while (!inputValido);
-							
-							System.out.print("\tInserire il nuovo luogo di nascita (vecchio luogo di nascita: \"" + nuovoStudente.getLuogoDiNascita() + "\"): ");
-							input = sc.nextLine();
-							if (!input.isEmpty()) {
-								nuovoStudente.setLuogoDiNascita(input);
-							}
-							
-							System.out.print("\tInserire la nuova classe frequentata (vecchia classe frequentata: \"" + nuovoStudente.getClasseFrequentata().toString() + "\") (esempio: 3cif): ");
-							do {
-								try {
-									input = sc.nextLine();
-									if (input.isEmpty()) {
-										break;
-									}
-									nuovoStudente.setClasseFrequentata(Classe.parse(sc.nextLine()));
-									inputValido = true;
-								} catch (FormatoClasseException exception) {
-									System.out.println(formatoInvalido + " (Suggerimento: il numero massimo per l'anno della classe e' 127)");
-									inputValido = false;
-								}
-							} while (!inputValido);
-							
-							System.out.print("\tInserire i nuovi anni di ripetizione (vecchi anni di ripetizione: \"" + (nuovoStudente.getAnniDiRipetizione() == 0 ? "null" : risultato[0].getAnniDiRipetizione()) + "\", se lo studente non e' mai stato bocciato inserire 0): ");
-							do {
-								try {
-									input = sc.nextLine();
-									if (input.isEmpty()) {
-										break;
-									}
-									nuovoStudente.setAnniDiRipetizione(Byte.parseByte(input));
-									inputValido = true;
-								} catch (NumberFormatException exception) {
-									System.out.println(formatoInvalido + " (Suggerimento: il numero massimo di anni e' 127)");
-									inputValido = false;
-								}
-							} while (!inputValido);
+							nuovoStudente = ottieniNuoveCredenziali(risultato[scelta], sc, formatoInvalido);
 						}
 
+						/* Modifica e salvataggio */
 						gestore.modificaStudente(risultato[scelta], nuovoStudente);
 						System.out.println("\nInformazioni studente modificate con successo!");
-						
-						System.out.print("Desideri salvare la lista degli studenti sul file di salvataggio? (si/no): ");
-						do {
-							switch (sc.nextLine()) {
-								case "si":
-									gestore.salvaListaStudenti(pathSalvataggio);
-									System.out.println("La lista e' stata salvata correttamente!");
-									inputValido = true;
-									break;
-								case "no":
-									inputValido = true;
-									break;
-								default:
-									System.out.println(formatoInvalido);
-									inputValido = false;
-							}
-						} while (!inputValido);
+						richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
 					} catch (StudenteNonTrovatoException exception) {
 						System.out.println("\nNessuno studente con tali credenziali trovato nella lista. ");
 					} catch (FileNotFoundException exception) {
@@ -428,10 +390,10 @@ public class Menu {
 					cls();
 
 					break;
-				}
-				case 4: { // Elimina studente
+				} case 4: { // Elimina studente
 					System.out.print(">Elimina studente\n\n");
 
+					/* Ricerca */
 					String nome, cognome;
 
 					System.out.print("\tInserire il nome dello studente che si vuole eliminare: ");
@@ -472,6 +434,7 @@ public class Menu {
 							} while (!inputValido);
 						}
 
+						/* Conferma ed eliminazione */
 						System.out.print("\nSi vuole davvero eliminarlo dalla lista? (si/no): ");
 
 						do {
@@ -479,24 +442,7 @@ public class Menu {
 								case "si":
 									gestore.eliminaStudente(risultato[scelta]);
 									System.out.println("\nLo studente e' stato rimosso dalla lista con successo.");
-									
-									System.out.print("Desideri salvare la lista degli studenti sul file di salvataggio? (si/no): ");
-									do {
-										switch (sc.nextLine()) {
-											case "si":
-												gestore.salvaListaStudenti(pathSalvataggio);
-												System.out.println("La lista e' stata salvata correttamente!");
-												inputValido = true;
-												break;
-											case "no":
-												inputValido = true;
-												break;
-											default:
-												System.out.println(formatoInvalido);
-												inputValido = false;
-										}
-									} while (!inputValido);
-
+									richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
 									inputValido = true;
 									break;
 								case "no":
@@ -520,8 +466,7 @@ public class Menu {
 					cls();
 					
 					break;
-				}
-				case 5: { // Visualizza lista studenti
+				} case 5: { // Visualizza lista studenti
 					System.out.print(">Visualizza lista studenti\n\n");
 
 					for (Studente studente : gestore.getListaStudenti()) {
@@ -532,10 +477,10 @@ public class Menu {
 					cls();
 
 					break;
-				}
-				case 9:
+				} case 11: {
 					chiudiProgramma = true;
 					sc.close();
+				}
 			}
 		}
 	}

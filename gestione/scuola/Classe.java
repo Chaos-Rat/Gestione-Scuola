@@ -8,7 +8,6 @@
 package gestione.scuola;
 
 import java.io.Serializable;
-import java.util.InputMismatchException;
 
 public class Classe implements Serializable {
     private byte anno;
