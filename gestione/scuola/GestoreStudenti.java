@@ -1,12 +1,14 @@
 /**
- * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso un gestore per il salvataggio
+ * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso <code>GestoreSalvataggio</code>
  * 
  * @version 1.2 (4-1-2023)
  * @author Adnaan Juma
  * @author Lorenzo Freccero
+ * @see gestione.salvataggio.GestoreSalvataggio
+ * @see gestione.scuola.Studente
  */
 
-package gestione.scuola;
+ package gestione.scuola;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,29 +16,26 @@ import java.util.ArrayList;
 
 import gestione.salvataggio.GestoreSalvataggio;
 
-public class GestoreStudenti {
+ public class GestoreStudenti {
 	private ArrayList<Studente> listaStudenti;
-	private GestoreSalvataggio gestoreSalvataggio;
 
 	/**
-	 * Costruttore di default, instanzia gli attributi listaStudenti e gestoreSalvataggio chiamando i loro costruttori
+	 * Costruttore di default, instanzia l'attributo listaStudenti con il suo costruttore
 	 */
 	public GestoreStudenti()
 	{
 		listaStudenti = new ArrayList<Studente>();
-		gestoreSalvataggio = new GestoreSalvataggio();
 	}
 	
 	/**
 	 * Costruttore di copia, inizializza l'attributo listaStudenti con il costruttore di copia di ArrayList su la lista studenti
-	 * dell'altra istanza, mentre inizializza gestoreSalvataggio chiamando il suo costruttore
+	 * dell'altra istanza
 	 * 
 	 * @param altro istanza da cui dovra' essere effettuata la copia
 	 */
 	public GestoreStudenti(GestoreStudenti altro)
 	{
 		listaStudenti = new ArrayList<Studente>(altro.listaStudenti);
-		gestoreSalvataggio = new GestoreSalvataggio();
 	}
 
 	/**
@@ -44,8 +43,8 @@ public class GestoreStudenti {
 	 * 
 	 * @return copia della lista studenti
 	 */
-	public ArrayList<Studente> getListaStudenti() {
-		return new ArrayList<Studente>(listaStudenti);
+	public Studente[] getListaStudenti() {
+		return listaStudenti.toArray(new Studente[0]);
 	}
 
 	/**
@@ -58,26 +57,26 @@ public class GestoreStudenti {
 	 */
 	public Studente[] cercaStudente(String nome, String cognome) throws StudenteNonTrovatoException
 	{
-		ArrayList<Studente> temp = new ArrayList<Studente>();
+		ArrayList<Studente> lista = new ArrayList<Studente>();
 
 		for (Studente studente : listaStudenti) {
 			if (studente.getNome().equals(nome) && studente.getCognome().equals(cognome)) {
-				temp.add(new Studente(studente));
+				lista.add(new Studente(studente));
 			}
 		}
 
-		if (temp.size() == 0) {
+		if (lista.size() == 0) {
 			throw new StudenteNonTrovatoException();
 		}
 
-		return temp.toArray(new Studente[0]);
+		return lista.toArray(new Studente[0]);
 	}
 	
 	/**
 	 * Salva uno studente all'interno della lista facendo una copia
 	 * 
 	 * @param studente lo studente da salvare nella lista
-	 * @throws StudenteGiaEsitenteException se lo studente e' gia' all'interno della lista degli studenti
+	 * @throws StudenteGiaEsistenteException se lo studente e' gia' all'interno della lista degli studenti
 	 */
 	public void salvaStudente(Studente studente) throws StudenteGiaEsistenteException
 	{
@@ -128,61 +127,79 @@ public class GestoreStudenti {
 		throw new StudenteNonTrovatoException();
 	}
 	
-	/*
-	 * Mostra a schermo una lista di tutti gli studenti di una certa classe e sezione
+	/**
+	 * Ritorna la lista di tutti gli studenti di una certa classe
+	 * 
+	 * @param classe classe a cui devono appartenere gli studenti
+	 * @return lista degli studenti appartenenti alla classe data da input
+	 * @throws ClasseNonTrovataException se nessuno studente nella lista appartiene alla classe data da input
 	 */
-	public void mostraClasse(byte classe, String sezione)
+	public Studente[] getClasse(Classe classe) throws ClasseNonTrovataException
 	{
 		int n = 0;
+		ArrayList<Studente> lista = new ArrayList<Studente>();
 		
 		while(n < listaStudenti.size()) {
-			if(listaStudenti.get(n).getClasseFrequentata() == classe && listaStudenti.get(n).getSezioneFrequentata().equals(sezione))
-			{
-				System.out.println(listaStudenti.get(n).getNome() + " " + listaStudenti.get(n).getCognome());
-				System.out.println(listaStudenti.get(n).getDataDiNascita());
-				System.out.println(listaStudenti.get(n).getLuogoDiNascita());
-				System.out.println(listaStudenti.get(n).getClasseFrequentata() + listaStudenti.get(n).getSezioneFrequentata());
-				System.out.println("Anni di Ripetizione: " + listaStudenti.get(n).getAnniDiRipetizione());
+			if(listaStudenti.get(n).getClasseFrequentata().equals(classe)) {
+				lista.add(listaStudenti.get(n));
 			}
 			
 			n++;
 		}
+
+		if (lista.size() == 0) {
+			throw new ClasseNonTrovataException();
+		}
+
+		return lista.toArray(new Studente[0]);
 	}
 	
-	/*
+	/**
 	 * Elimina un intera classe di studenti
+	 * 
+	 * @param classe classe a cui devono appartenere gli studenti
+	 * @throws ClasseNonTrovataException se nessuno studente nella lista appartiene alla classe data da input
 	 */
-	public void eliminaClasse(byte classe, String sezione)
+	public void eliminaClasse(Classe classe) throws ClasseNonTrovataException
 	{
 		int n = 0;
+		int vecchiaLunghezza = listaStudenti.size();
 		
 		while(n < listaStudenti.size()) {
-			if(listaStudenti.get(n).getClasseFrequentata() == classe && listaStudenti.get(n).getSezioneFrequentata().equals(sezione))
-			{
+			if(listaStudenti.get(n).getClasseFrequentata().equals(classe)) {
 				listaStudenti.remove(n);
 			}
 			
 			n++;
 		}
+
+		if (vecchiaLunghezza == listaStudenti.size()) {
+			throw new ClasseNonTrovataException();
+		}
 	}
 	
-	/*
-	 * Fa avanzare di un anno tutti gli studenti della scuola, se uno studente si trova in 5a, lo rimuove dall'elenco direttamente
+	/**
+	 * Fa avanzare di un anno la classe di tutti gli studenti della lista tranne quelli bocciati per l'anno, e se uno studente si trova in 5, lo rimuove dall'elenco direttamente
 	 */
 	public void promuoviStudenti()
 	{
 		int n = 0;
 		
 		while(n < listaStudenti.size()) {
-			if(listaStudenti.get(n).getClasseFrequentata() == 5) {
+			if(listaStudenti.get(n).getClasseFrequentata().getAnno() >= 5) {
 				listaStudenti.remove(n);
+			} else if (!listaStudenti.get(n).isBocciato()) { 
+				Studente copia = new Studente(listaStudenti.get(n));
+				copia.setClasseFrequentata(new Classe((byte)(copia.getClasseFrequentata().getAnno() + 1), copia.getClasseFrequentata().getSezione()));
+				listaStudenti.set(n, copia);
+			} else { // Studente bocciato
+				Studente copia = new Studente(listaStudenti.get(n));
+				copia.setBocciato(false); // Non ha avanzato l'anno, ma per il prossimo anno non sara' piu' in stato di bocciatura
+				listaStudenti.set(n, copia);
 			}
-			else {
-				listaStudenti.get(n).setClasseFrequentata((byte) (listaStudenti.get(n).getClasseFrequentata() + 1));
-				n++;
-			}
+
+			n++;
 		}
-		
 	}
 	
 	/**
@@ -196,7 +213,7 @@ public class GestoreStudenti {
 	 */
 	public void salvaListaStudenti(String percorsoFileSalvataggio) throws FileNotFoundException, IOException
 	{
-		gestoreSalvataggio.serializzaLista(listaStudenti, percorsoFileSalvataggio);
+		GestoreSalvataggio.serializzaLista(listaStudenti, percorsoFileSalvataggio);
 	}
 	
 	/**
@@ -211,6 +228,6 @@ public class GestoreStudenti {
 	 */
 	public void caricaListaStudenti(String percorsoFileSalvataggio) throws FileNotFoundException, IOException, ClassNotFoundException
 	{
-		listaStudenti = gestoreSalvataggio.<Studente>deserializzaLista(percorsoFileSalvataggio);
+		listaStudenti = GestoreSalvataggio.<Studente>deserializzaLista(percorsoFileSalvataggio);
 	}
 }

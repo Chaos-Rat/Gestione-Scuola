@@ -3,7 +3,7 @@
  * nome, cognome, data di nascita, luogo di nascita, classe frequentata e anni di ripetizione.
  * Implementa la classe <b>Serializable</b> ed e' quindi possibile serializzarla.
  * 
- * @version 1.4 (4-1-2023)
+ * @version 1.5 (5-1-2023)
  * @author Adnaan Juma
  * @author Lorenzo Freccero
  */
@@ -15,22 +15,22 @@ import java.time.LocalDate;
 public class Studente implements Serializable {
 	private String nome, cognome;
 	private LocalDate dataDiNascita;
-	private String luogoDiNascita, sezioneFrequentata;
-	private byte classeFrequentata, anniDiRipetizione;
-	private static final long serialVersionUID = -1880554790296497074L;
+	private String luogoDiNascita;
+	private Classe classeFrequentata;
+	private byte anniDiRipetizione;
 	private boolean bocciato;
-
+	private static final long serialVersionUID = 2480852755366942996L;
+	
 	/**
-	 * Costruttore di default, inizializza tutti gli interi a zero, le stringe a stringhe vuote, e la data a 0000-01-01 (aaaa-mm-gg)
+	 * Costruttore di default, inizializza tutti gli interi a zero, le stringe a stringhe vuote, la data a null, e bocciato a falso
 	 */
 	public Studente()
 	{
 		nome = "";
 		cognome = "";
-		dataDiNascita = LocalDate.of(0,1,1);
+		dataDiNascita = null;
 		luogoDiNascita = "";
-		classeFrequentata = 0;
-		sezioneFrequentata = "";
+		classeFrequentata = new Classe((byte)0, "");
 		anniDiRipetizione = 0;
 		bocciato = false;
 	}
@@ -44,17 +44,17 @@ public class Studente implements Serializable {
 	 * @param luogoDiNascita luogo di nascita dello studente
 	 * @param classeFrequentata classe frequentata dallo studente
 	 * @param anniDiRipetizione anni di ripetizione dello studente nel caso in cui sia stato bocciato. In caso non sia mai stato bocciato ha valore <i>null</i>
+	 * @param bocciato se lo studente e' bocciato per quest'anno o no
 	 */
-	public Studente(String nome, String cognome, LocalDate dataDiNascita, String luogoDiNascita, byte classeFrequentata, String sezioneFrequentata, byte anniDiRipetizione)
+	public Studente(String nome, String cognome, LocalDate dataDiNascita, String luogoDiNascita, Classe classeFrequentata, byte anniDiRipetizione, boolean bocciato)
 	{
 		this.nome = nome;
 		this.cognome = cognome;
 		this.dataDiNascita = dataDiNascita;
 		this.luogoDiNascita = luogoDiNascita;
-		this.classeFrequentata = classeFrequentata;
-		this.sezioneFrequentata = sezioneFrequentata;
+		this.classeFrequentata = new Classe(classeFrequentata);
 		this.anniDiRipetizione = anniDiRipetizione;
-		this.bocciato = false;
+		this.bocciato = bocciato;
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class Studente implements Serializable {
 		cognome = altro.cognome;
 		dataDiNascita = altro.dataDiNascita;
 		luogoDiNascita = altro.luogoDiNascita;
-		classeFrequentata = altro.classeFrequentata;
-		sezioneFrequentata = altro.sezioneFrequentata;
+		classeFrequentata = new Classe(altro.classeFrequentata);
 		anniDiRipetizione = altro.anniDiRipetizione;
+		bocciato = altro.bocciato;
 	}
 
 	/**
@@ -158,9 +158,9 @@ public class Studente implements Serializable {
 	 * 
 	 * @return valore attributo classeFrequentata
 	 */
-	public byte getClasseFrequentata()
+	public Classe getClasseFrequentata()
 	{
-		return classeFrequentata;
+		return new Classe(classeFrequentata);
 	}
 
 	/**
@@ -168,27 +168,9 @@ public class Studente implements Serializable {
 	 * 
 	 * @param nome valore da assegnare all'attributo classeFrequentata
 	 */
-	public void setClasseFrequentata(byte classeFrequentata)
+	public void setClasseFrequentata(Classe classeFrequentata)
 	{
-		this.classeFrequentata = classeFrequentata;
-	}
-	
-	/**
-	 * Getter per l'attributo sezioneFrequentata
-	 * 
-	 * @return valore attributo sezioneFrequentata
-	 */
-	public String getSezioneFrequentata() {
-		return sezioneFrequentata;
-	}
-	
-	/**
-	 * Setter per l'attributo sezioneFrequentata
-	 * 
-	 * @param nome valore da assegnare all'attributo sezioneFrequentata
-	 */
-	public void setSezioneFrequentata(String sezioneFrequentata) {
-		this.sezioneFrequentata = sezioneFrequentata;
+		this.classeFrequentata = new Classe(classeFrequentata);
 	}
 
 	/**
@@ -216,7 +198,8 @@ public class Studente implements Serializable {
 	 * 
 	 * @return valore attributo bocciato
 	 */
-	public boolean isBocciato() {
+	public boolean isBocciato()
+	{
 		return bocciato;
 	}
 	
@@ -225,27 +208,42 @@ public class Studente implements Serializable {
 	 * 
 	 * @param nome valore da assegnare all'attributo bocciato
 	 */
-	public void setBocciato(boolean bocciato) {
+	public void setBocciato(boolean bocciato)
+	{
 		this.bocciato = bocciato;
 	}
 
+	/**
+     * Converte questo oggetto in formato <code>String</code>
+     * 
+     * @return una rappresentazione di questo oggetto in <code>String</code>
+     */
 	@Override
 	public String toString()
 	{
-		return "Studente [nome = \"" + nome + "\", cognome = \"" + cognome + "\", dataDiNascita = " + dataDiNascita.toString()
-				+ ", luogoDiNascita = \"" + luogoDiNascita + "\", classeFrequentata = " + classeFrequentata
-				+ "\", classeFrequentata = " + sezioneFrequentata + ", anniDiRipetizione = " + (anniDiRipetizione == 0 ? "null]" : (anniDiRipetizione + "]"));
+		return "nome = \"" + nome + "\", cognome = \"" + cognome + "\", data di nascita = " + (dataDiNascita == null ? "null" : dataDiNascita.toString())
+			+ ", luogo di nascita = \"" + luogoDiNascita + "\", classe frequentata = " + classeFrequentata.toString()
+			+ ", anni di ripetizione = " + (anniDiRipetizione == 0 ? "null" : anniDiRipetizione)
+			+ ", lo studente " + (bocciato ? "" : "non") + " verra' bocciato quest'anno";
 	}
 
 	/**
-	 * Compara gli attributi di questa istantaza e quella inserita da input e controlla se hanno valori uguali
-	 * 
-	 * @param altro istanza da comparare a questa
-	 * @return true se sono uguali, false altrimenti
-	 */
-	public boolean equals(Studente altro)
+     * Ritorna se questa istanza di <code>Studente</code> e' uguale ad un'altro oggetto inserito da input
+     * 
+     * @param oggetto oggetto da comparare a questa
+     * @return <code>true</code> se l'oggetto rappresenta una istanza <code>Studente</code> equivalente a questa, <code>false</code> in caso contrario
+     */
+	@Override
+	public boolean equals(Object oggetto)
 	{
-		return nome.equals(altro.nome) && cognome.equals(altro.cognome) && dataDiNascita.equals(altro.dataDiNascita)
-			&& luogoDiNascita.equals(altro.luogoDiNascita) && classeFrequentata == altro.classeFrequentata && sezioneFrequentata.equals(altro.sezioneFrequentata) && anniDiRipetizione == altro.anniDiRipetizione;
+		if (this == oggetto) {
+            return true;
+        }
+        if (oggetto instanceof Studente) {
+            return nome.equals(((Studente)oggetto).nome) && cognome.equals(((Studente)oggetto).cognome) && dataDiNascita.equals(((Studente)oggetto).dataDiNascita)
+				&& luogoDiNascita.equals(((Studente)oggetto).luogoDiNascita) && classeFrequentata.equals(((Studente)oggetto).classeFrequentata) 
+				&& anniDiRipetizione == ((Studente)oggetto).anniDiRipetizione && bocciato == ((Studente)oggetto).bocciato;
+        }
+        return false;
 	}
 }

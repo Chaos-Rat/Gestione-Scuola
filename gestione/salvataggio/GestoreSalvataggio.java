@@ -2,7 +2,7 @@
  * Classe GestoreSalvataggio, fornisce dei metodi per la serializzazione e deserializzazione degli oggetti,
  * attualmente solo per le ArrayList.
  * 
- * @version 1.1 (2-1-2023)
+ * @version 1.2 (5-1-2023)
  * @author Adnaan Juma
  */
 
@@ -28,7 +28,7 @@ public class GestoreSalvataggio {
 	 * <li>e' impossibile aprirlo per qualsiasi altra ragione</li></ul>
 	 * @throws IOException se un errore di IO (Input/Output) occore in fase di scrittura dell'header dello stream
 	 */
-	public <T> void serializzaLista(ArrayList<T> lista, String percorsoFile) throws FileNotFoundException, IOException
+	public static <T> void serializzaLista(ArrayList<T> lista, String percorsoFile) throws FileNotFoundException, IOException
 	{
 		ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(percorsoFile));
 		stream.writeObject(lista);
@@ -47,7 +47,7 @@ public class GestoreSalvataggio {
 	 * @throws IOException se un errore di IO (Input/Output) occore in fase di lettura dell'header dello stream
 	 * @throws ClassNotFoundException se non e' stato possibile trovare la lista all'interno del file
 	 */
-	public <T> ArrayList<T> deserializzaLista(String percorsoFile) throws FileNotFoundException, IOException, ClassNotFoundException
+	public static <T> ArrayList<T> deserializzaLista(String percorsoFile) throws FileNotFoundException, IOException, ClassNotFoundException
 	{
 		ObjectInputStream stream = new ObjectInputStream(new FileInputStream(percorsoFile));
 		@SuppressWarnings("unchecked")
