@@ -11,10 +11,8 @@ package gestione.scuola;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
@@ -30,12 +28,10 @@ public class Menu {
 	/**
 	 * Stampa un messaggio di avvertimento e attende il premersi del tasto invio da console
 	 */
-	public static void attendiInvio()
+	public static void attendiInvio(Scanner sc)
 	{
-		Scanner sc = new Scanner(System.in);
 		System.out.print("\nPremere invio per tornare al menu principale...");
 		sc.nextLine();
-		sc.close();
 	}
 	
 	/**
@@ -72,7 +68,7 @@ public class Menu {
 
 		/* Menu */
 		while (!chiudiProgramma) {
-			System.out.print("Scegli una delle seguenti opzioni:"
+			System.out.print("\nScegli una delle seguenti opzioni:"
 			+ "\n[1]: Salva studente"
 			+ "\n[2]: Cerca studente"
 			+ "\n[3]: Modifica informazioni studente"
@@ -185,22 +181,16 @@ public class Menu {
 									inputValido = false;
 							}
 						} while (!inputValido);
-						
-						attendiInvio();
-						cls();
 					} catch (StudenteGiaEsistenteException exception) {
 						System.out.println("\nAttenzione lo studente e' gia' stato inserito nella lista precedentemente e non verra inserito!");
-						attendiInvio();
-						cls();
 					} catch (FileNotFoundException exception) {
 						System.out.println(erroreFile);
-						attendiInvio();
-						cls();
 					} catch (IOException exception) {
 						System.out.println(erroreScrittura);
-						attendiInvio();
-						cls();
 					}
+
+					attendiInvio(sc);
+					cls();
 
 					break;
 				}
@@ -219,14 +209,12 @@ public class Menu {
 						for (Studente studente : gestore.cercaStudente(nome, cognome)) {
 							System.out.print("\n" + studente.toString() + "\n");
 						}
-
-						attendiInvio();
-						cls();
 					} catch (StudenteNonTrovatoException exception) {
 						System.out.println("\nNessuno Studente con tali credenziali trovato nella lista.");
-						attendiInvio();
-						cls();
 					}
+
+					attendiInvio(sc);
+					cls();
 
 					break;
 				}
@@ -428,22 +416,16 @@ public class Menu {
 									inputValido = false;
 							}
 						} while (!inputValido);
-						
-						attendiInvio();
-						cls();
 					} catch (StudenteNonTrovatoException exception) {
 						System.out.println("\nNessuno studente con tali credenziali trovato nella lista. ");
-						attendiInvio();
-						cls();
 					} catch (FileNotFoundException exception) {
 						System.out.println(erroreFile);
-						attendiInvio();
-						cls();
 					} catch (IOException exception) {
 						System.out.println(erroreScrittura);
-						attendiInvio();
-						cls();
 					}
+
+					attendiInvio(sc);
+					cls();
 
 					break;
 				}
@@ -526,22 +508,16 @@ public class Menu {
 									inputValido = false;
 							}
 						} while (!inputValido);
-
-						attendiInvio();
-						cls();
 					} catch (StudenteNonTrovatoException exception) {
-						System.out.print("\nNessuno studente con tali credenziali trovato nella lista. ");
-						sc.nextLine();
-						cls();
+						System.out.println("\nNessuno studente con tali credenziali trovato nella lista.");
 					} catch (FileNotFoundException exception) {
 						System.out.println(erroreFile);
-						attendiInvio();
-						cls();
 					} catch (IOException exception) {
 						System.out.println(erroreScrittura);
-						attendiInvio();
-						cls();
 					}
+
+					attendiInvio(sc);
+					cls();
 					
 					break;
 				}
@@ -552,7 +528,7 @@ public class Menu {
 						System.out.print("\n\t" + studente.toString() + "\n");
 					}
 
-					attendiInvio();
+					attendiInvio(sc);
 					cls();
 
 					break;
