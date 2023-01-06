@@ -1,7 +1,7 @@
 /**
  * Classe Menu, fornisce un menu di base.
  * 
- * @version 1.4 (5-1-2023)
+ * @version 1.5 (6-1-2023)
  * @author Adnaan Juma
  * @author Matteo Del Checcolo
  * @author Lorenzo Freccero
@@ -120,7 +120,7 @@ public class Menu {
 
 	/**
 	 * Chiede all'utente se vuole salvare la lista degli studenti nel file di salvataggio.
-	 * <b>Da utilizzare con quelle azioni da menu (esempio: [1] salva studente) che modificano la lista degli studenti del gestore</b>
+	 * <b>Da utilizzare con quelle azioni di menu che modificano la lista degli studenti del gestore (esempio: opzione 1 salva studente)</b>
 	 * 
 	 * @param gestore istanza di <code>GestoreStudenti</code> attualmente in uso
 	 * @param pathSalvataggio percorso del file di salvataggio
@@ -195,16 +195,17 @@ public class Menu {
 			+ "\n[5]: Visualizza lista studenti"
 			+ "\n[6]: Visualizza classe"
 			+ "\n[7]: Elimina classe"
-			+ "\n[8]: Promuovi studenti"
-			+ "\n[9]: Salva lista studenti"
-			+ "\n[10]: Carica lista studenti"
-			+ "\n[11]: Chiudi il programma\n\n");
+			+ "\n[8]: Boccia studente"
+			+ "\n[9]: Promuovi studenti"
+			+ "\n[10]: Salva lista studenti"
+			+ "\n[11]: Carica lista studenti"
+			+ "\n[12]: Chiudi il programma\n\n");
 
 			do {
 				try {
 					scelta = Integer.parseInt(sc.nextLine());
 
-					if (scelta < 1 || scelta > 11) {
+					if (scelta < 1 || scelta > 12) {
 						throw new NumberFormatException();
 					}
 
@@ -219,7 +220,7 @@ public class Menu {
 			
 			switch(scelta) {
 				case 1: { // Salva studente
-					System.out.print(">Salva Studente\n\n");
+					System.out.print(">Salva studente\n\n");
 					
 					/* Ottenimento informazioni */
 					Studente studente = new Studente();
@@ -244,7 +245,7 @@ public class Menu {
 					System.out.print("\tInserire il luogo di nascita: ");
 					studente.setLuogoDiNascita(sc.nextLine());
 					
-					System.out.print("\tInserire la classe frequentata (ex: 4BIF): ");
+					System.out.print("\tInserire la classe frequentata (Le maiuscole/minuscole nella sezione non contano, esempio: 4BIF = 4bif = 4BIf): ");
 					do {
 						try {
 							studente.setClasseFrequentata(Classe.parse(sc.nextLine()));
@@ -314,7 +315,7 @@ public class Menu {
 							System.out.print("\n" + studente.toString() + "\n");
 						}
 					} catch (StudenteNonTrovatoException exception) {
-						System.out.println("\nNessuno Studente con tali credenziali trovato nella lista.");
+						System.out.println("\nNessuno studente con tali credenziali trovato nella lista.");
 					}
 
 					attendiInvio(sc);
@@ -477,7 +478,235 @@ public class Menu {
 					cls();
 
 					break;
+				} case 6: {
+					System.out.print(">Visualizza classe\n\n");
+					
+					System.out.print("\tInserire la classe che si vuole visualizzare, le maiuscole/minuscole verranno ignorate nel confronto (esempio: 1CIF = 1cif = 1CiF): ");
+
+					do {
+						try {
+							for (Studente studente : gestore.getClasse(Classe.parse(sc.nextLine()))) {
+								System.out.print("\n" + studente.toString() + "\n");
+							}
+							inputValido = true;
+						} catch (FormatoClasseException exception) {
+							System.out.print(formatoInvalido + " (suggerimento: il numero massimo per l'anno della classe e' 127, e la sezione non puo' contenere caratteri speciali\n\t");
+							inputValido = false;
+						} catch (ClasseNonTrovataException exception) {
+							System.out.println("\nNessuno studente appartenente a tale classe e' stato trovato nella lista.");
+							inputValido = true;
+						}
+					} while (!inputValido);
+					
+					attendiInvio(sc);
+					cls();
+
+					break;
+				} case 7: {
+					System.out.print(">Elimina classe\n\n");
+					
+					System.out.print("\tInserire la classe che si vuole eliminare, le maiuscole/minuscole verranno ignorate nel confronto (esempio: 1CIF = 1cif = 1CiF): ");
+					do {
+						try {
+							Classe classe = Classe.parse(sc.nextLine());
+							inputValido = true;
+
+							System.out.print("\nClasse trovata!\n");
+
+							System.out.print("\nSi vuole davvero eliminarla dalla lista? (si/no): ");
+							do {
+								switch (sc.nextLine()) {
+									case "si":
+										gestore.eliminaClasse(classe);
+										System.out.println("\nGli studenti appartenenti alla classe sono stati rimossi dalla lista con successo.");
+										richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
+										inputValido = true;
+										break;
+									case "no":
+										System.out.println("\nOperazione annullata.");
+										inputValido = true;
+										break;
+									default:
+										System.out.println(formatoInvalido);
+										inputValido = false;
+								}
+							} while (!inputValido);
+						} catch (FormatoClasseException exception) {
+							System.out.print(formatoInvalido + " (suggerimento: il numero massimo per l'anno della classe e' 127, e la sezione non puo' contenere caratteri speciali\n\t");
+							inputValido = false;
+						} catch (ClasseNonTrovataException exception) {
+							// Impossibile
+						} catch (FileNotFoundException exception) {
+							System.out.println(erroreFile);
+							inputValido = true;
+						} catch (IOException exception) {
+							System.out.println(erroreScrittura);
+							inputValido = true;
+						}
+					} while (!inputValido);
+
+					attendiInvio(sc);
+					cls();
+
+					break;
+				} case 8: {
+					System.out.print(">Boccia studente\n\n");
+
+					/* Ricerca */
+					String nome, cognome;
+
+					System.out.print("\tInserire il nome dello studente che si desidera bocciare: ");
+					nome = sc.nextLine();
+
+					System.out.print("\tInserire il cognome dello studente che si desidera bocciare: ");
+					cognome = sc.nextLine();
+
+					/* Ottenimento informazioni */
+					try {
+						Studente[] risultato = gestore.cercaStudente(nome, cognome);
+						Studente nuovoStudente;
+						
+						if (risultato.length == 1) {
+							scelta = 0;
+							nuovoStudente = new Studente(risultato[0]);
+							nuovoStudente.setBocciato(true);
+							
+							System.out.print("\nStudente trovato!");
+						} else {
+							System.out.print("\nPiu' di uno studente trovato!\n");
+
+							for (int i = 0; i < risultato.length; i++) {
+								System.out.print("\n\t[" + i + "] " + risultato[i].toString() + "\n");
+							}
+
+							System.out.print("\nQuale dei " + risultato.length + " studenti si vuole bocciare? ");
+							
+							do {
+								try {
+									scelta = Integer.parseInt(sc.nextLine());
+				
+									if (scelta < 0 || scelta > risultato.length - 1) {
+										throw new NumberFormatException();
+									}
+				
+									inputValido = true;
+								} catch (NumberFormatException exception) {
+									System.out.println(formatoInvalido);
+									inputValido = false;
+								}
+							} while (!inputValido);
+
+							nuovoStudente = new Studente(risultato[scelta]);
+							nuovoStudente.setBocciato(true);
+						}
+
+						/* Modifica e salvataggio */
+						System.out.print("\nSi desidera davvero bocciarlo? (si/no): ");
+
+						do {
+							switch (sc.nextLine()) {
+								case "si":
+									gestore.modificaStudente(risultato[scelta], nuovoStudente);
+									System.out.println("\nStudente bocciato con successo!");
+									richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
+									inputValido = true;
+									break;
+								case "no":
+									System.out.println("\nOperazione annullata.");
+									inputValido = true;
+									break;
+								default:
+									System.out.println(formatoInvalido);
+									inputValido = false;
+							}
+						} while (!inputValido);
+					} catch (StudenteNonTrovatoException exception) {
+						System.out.println("\nNessuno studente con tali credenziali trovato nella lista. ");
+					} catch (FileNotFoundException exception) {
+						System.out.println(erroreFile);
+					} catch (IOException exception) {
+						System.out.println(erroreScrittura);
+					}
+
+					attendiInvio(sc);
+					cls();
+
+					break;
+				} case 9: {
+					System.out.print(">Promuovi studenti\n\n");
+
+					System.out.print("Promuovendo gli studenti, l'anno della loro classe aumentera' di 1 a meno che' essi non siano stati bocciati, in tal caso non avanzeranno di anno"
+					+ "\nma il lo status \"bocciato\" verra' tolto e aumentati di 1 gli anni di ripetizione. Si consiglia di rivedere la lista degli studenti e di bocciare gli adeguati studenti prima di procedere con l'operazione."
+					+ "\nContinuare lo stesso? (si/no): ");
+
+					do {
+						switch (sc.nextLine()) {
+							case "si":
+								gestore.promuoviStudenti();
+								System.out.println("\nStudenti promossi con successo!");
+								try {
+									richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
+								} catch (FileNotFoundException exception) {
+									System.out.println(erroreFile);
+								} catch (IOException exception) {
+									System.out.println(erroreScrittura);
+								}
+								inputValido = true;
+								break;
+							case "no":
+								System.out.println("\nOperazione annullata.");
+								inputValido = true;
+								break;
+							default:
+								System.out.println(formatoInvalido);
+								inputValido = false;
+						}
+					} while (!inputValido);
+
+					break;
+				} case 10: {
+					System.out.print(">Salva lista studenti\n\n");
+
+					try {
+						richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
+					} catch (FileNotFoundException exception) {
+						System.out.println(erroreFile);
+					} catch (IOException exception) {
+						System.out.println(erroreScrittura);
+					}
+
+					break;
 				} case 11: {
+					System.out.print(">Carica lista studenti\n\n");
+
+					System.out.print("Desideri salvare la lista degli studenti sul file di salvataggio? (si/no): ");
+					
+					try {
+						do {
+							switch (sc.nextLine()) {
+								case "si":
+									gestore.caricaListaStudenti(pathSalvataggio);
+									System.out.println("La lista degli studenti e' stata caricata dal file di salvataggio con successo.");
+									inputValido = true;
+									break;
+								case "no":
+									inputValido = true;
+									break;
+								default:
+									System.out.println(formatoInvalido);
+									inputValido = false;
+							}
+						} while (!inputValido);
+					} catch (FileNotFoundException exception) {
+						System.out.println("Attenzione, il file di salvataggio non e' presente e non verra' quindi caricata la lista.");
+					} catch (IOException exception) {
+						System.out.println(erroreLettura);
+					} catch (ClassNotFoundException exception) {
+						System.out.println("Attenzione, il file di salvataggio non contiene dati della lista, essa non verra' caricata.");
+					}
+
+					break;
+				} case 12: {
 					chiudiProgramma = true;
 					sc.close();
 				}

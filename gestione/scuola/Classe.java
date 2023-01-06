@@ -1,7 +1,7 @@
 /**
  * Classe Classe, immagazzina anno e sezione di una classe di un'istituto scolastico.
  * 
- * @version 1.0 (5-1-2023)
+ * @version 1.1 (6-1-2023)
  * @author Adnaan Juma
  */
 
@@ -102,6 +102,23 @@ public class Classe implements Serializable {
         }
         if (oggetto instanceof Classe) {
             return anno == ((Classe)oggetto).anno && sezione.equals(((Classe)oggetto).sezione);
+        }
+        return false;
+    }
+
+    /**
+     * Ritorna se questa istanza di <code>Classe</code> e' uguale ad un'altro oggetto inserito da input, ignorando maiuscole/minuscole per la sezione
+     * 
+     * @param oggetto oggetto da comparare a questa
+     * @return <code>true</code> se l'oggetto rappresenta una instanza <code>Classe</code> equivalente a questa, avendo ignorato il casing della sezione, <code>false</code> in caso contrario
+     */
+    public boolean equalsIgnoreCase(Object oggetto)
+    {
+        if (this == oggetto) {
+            return true;
+        }
+        if (oggetto instanceof Classe) {
+            return anno == ((Classe)oggetto).anno && sezione.equalsIgnoreCase(((Classe)oggetto).sezione);
         }
         return false;
     }

@@ -1,7 +1,7 @@
 /**
  * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso <code>GestoreSalvataggio</code>
  * 
- * @version 1.2 (4-1-2023)
+ * @version 1.3 (6-1-2023)
  * @author Adnaan Juma
  * @author Lorenzo Freccero
  * @see gestione.salvataggio.GestoreSalvataggio
@@ -128,9 +128,9 @@ import gestione.salvataggio.GestoreSalvataggio;
 	}
 	
 	/**
-	 * Ritorna la lista di tutti gli studenti di una certa classe
+	 * Ritorna la lista di tutti gli studenti di una certa classe ignorando maiscole/minuscole per la sezione
 	 * 
-	 * @param classe classe a cui devono appartenere gli studenti
+	 * @param classe classe a cui devono appartenere gli studenti, casing ignorato per la sezione
 	 * @return lista degli studenti appartenenti alla classe data da input
 	 * @throws ClasseNonTrovataException se nessuno studente nella lista appartiene alla classe data da input
 	 */
@@ -140,7 +140,7 @@ import gestione.salvataggio.GestoreSalvataggio;
 		ArrayList<Studente> lista = new ArrayList<Studente>();
 		
 		while(n < listaStudenti.size()) {
-			if(listaStudenti.get(n).getClasseFrequentata().equals(classe)) {
+			if(listaStudenti.get(n).getClasseFrequentata().equalsIgnoreCase(classe)) {
 				lista.add(listaStudenti.get(n));
 			}
 			
@@ -155,27 +155,35 @@ import gestione.salvataggio.GestoreSalvataggio;
 	}
 	
 	/**
-	 * Elimina un intera classe di studenti
+	 * Elimina un intera classe di studenti ignorando maiscole/minuscole per la sezione
 	 * 
-	 * @param classe classe a cui devono appartenere gli studenti
+	 * @param classe classe a cui devono appartenere gli studenti, casing ignorato per la sezione
 	 * @throws ClasseNonTrovataException se nessuno studente nella lista appartiene alla classe data da input
 	 */
 	public void eliminaClasse(Classe classe) throws ClasseNonTrovataException
 	{
-		int n = 0;
-		int vecchiaLunghezza = listaStudenti.size();
-		
-		while(n < listaStudenti.size()) {
-			if(listaStudenti.get(n).getClasseFrequentata().equals(classe)) {
-				listaStudenti.remove(n);
+		for (Studente studente : getClasse(classe)) {
+			try {
+				eliminaStudente(studente);
+			} catch (StudenteNonTrovatoException exception) {} // verra tirata prima ClasseNonTrovataException
+		}
+	}
+
+	/**
+	 * Controlla se esiste almeno uno studente all'interno della lista appartenente alla classe inserita da input, ignorando maiscole/minuscole per la sezione
+	 * 
+	 * @param classe classe a cui deve appartenere lo studente, casing ignorato per la sezione
+	 * @return <code>true</code> se almeno uno studente nella lista appartiene alla classe data, <code>false</code> altrimenti
+	 */
+	public boolean hasClasse(Classe classe)
+	{
+		for (Studente studente : listaStudenti) {
+			if (studente.getClasseFrequentata().equalsIgnoreCase(classe)) {
+				return true;
 			}
-			
-			n++;
 		}
 
-		if (vecchiaLunghezza == listaStudenti.size()) {
-			throw new ClasseNonTrovataException();
-		}
+		return false;
 	}
 	
 	/**
