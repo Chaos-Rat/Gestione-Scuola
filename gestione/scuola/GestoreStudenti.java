@@ -1,7 +1,7 @@
 /**
  * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso <code>GestoreSalvataggio</code>
  * 
- * @version 1.3 (6-1-2023)
+ * @version 1.4 (6-1-2023)
  * @author Adnaan Juma
  * @author Lorenzo Freccero
  * @see gestione.salvataggio.GestoreSalvataggio
@@ -187,16 +187,14 @@ import gestione.salvataggio.GestoreSalvataggio;
 	}
 	
 	/**
-	 * Fa avanzare di un anno la classe di tutti gli studenti della lista tranne quelli bocciati per l'anno, e se uno studente si trova in 5, lo rimuove dall'elenco direttamente
+	 * Fa avanzare di un anno la classe di tutti gli studenti della lista tranne quelli bocciati per l'anno
 	 */
 	public void promuoviStudenti()
 	{
 		int n = 0;
 		
 		while(n < listaStudenti.size()) {
-			if(listaStudenti.get(n).getClasseFrequentata().getAnno() >= 5) {
-				listaStudenti.remove(n);
-			} else if (!listaStudenti.get(n).isBocciato()) { 
+			if (!listaStudenti.get(n).isBocciato()) {
 				Studente copia = new Studente(listaStudenti.get(n));
 				copia.setClasseFrequentata(new Classe((byte)(copia.getClasseFrequentata().getAnno() + 1), copia.getClasseFrequentata().getSezione()));
 				listaStudenti.set(n, copia);
