@@ -1,7 +1,7 @@
 /**
  * Classe GestoreStudente, permette di gestire una lista di studenti e di salvarla fisicamente attraverso <code>GestoreSalvataggio</code>
  * 
- * @version 1.4 (6-1-2023)
+ * @version 1.5 (12-1-2023)
  * @author Adnaan Juma
  * @author Lorenzo Freccero
  * @see gestione.salvataggio.GestoreSalvataggio
@@ -81,7 +81,7 @@ import gestione.salvataggio.GestoreSalvataggio;
 	public void salvaStudente(Studente studente) throws StudenteGiaEsistenteException
 	{
 		for (Studente st : listaStudenti) {
-			if (st.equals(studente)) {
+			if (st.equalsIgnoreCaseClasse(studente)) {
 				throw new StudenteGiaEsistenteException();
 			}
 		}
@@ -96,9 +96,16 @@ import gestione.salvataggio.GestoreSalvataggio;
 	 * @param vecchioStudente studente da ricercare all'interno della lista
 	 * @param nuovoStudente studente da sovrascrivere a quello trovato
 	 * @throws StudenteNonTrovatoException se vecchioStudente non e' stato trovato nella lista degli studenti
+	 * @throws StudenteGiaEsistenteException se nuovoStudente e' gia' all'interno della lista degli studenti
 	 */
-	public void modificaStudente(Studente vecchioStudente, Studente nuovoStudente) throws StudenteNonTrovatoException
-	{	
+	public void modificaStudente(Studente vecchioStudente, Studente nuovoStudente) throws StudenteNonTrovatoException, StudenteGiaEsistenteException
+	{
+		for (Studente st : listaStudenti) {
+			if (st.equalsIgnoreCaseClasse(nuovoStudente)) {
+				throw new StudenteGiaEsistenteException();
+			}
+		}
+
 		for (int i = 0; i < listaStudenti.size(); i++) {
 			if (vecchioStudente.equals(listaStudenti.get(i))) {
 				listaStudenti.set(i, new Studente(nuovoStudente));

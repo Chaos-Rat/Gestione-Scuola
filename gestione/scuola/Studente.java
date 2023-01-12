@@ -3,7 +3,7 @@
  * nome, cognome, data di nascita, luogo di nascita, classe frequentata e anni di ripetizione.
  * Implementa la classe <b>Serializable</b> ed e' quindi possibile serializzarla.
  * 
- * @version 1.5 (5-1-2023)
+ * @version 1.6 (12-1-2023)
  * @author Adnaan Juma
  * @author Lorenzo Freccero
  */
@@ -215,16 +215,19 @@ public class Studente implements Serializable {
 
 	/**
      * Converte questo oggetto in formato <code>String</code>
-     * 
+	 * in un formato adeguato per essere stampato nel menu
+	 * 
      * @return una rappresentazione di questo oggetto in <code>String</code>
+	 * @see gestione.scuola.Menu
      */
 	@Override
 	public String toString()
 	{
-		return "nome = \"" + nome + "\", cognome = \"" + cognome + "\", data di nascita = " + (dataDiNascita == null ? "null" : dataDiNascita.toString())
-			+ ", luogo di nascita = \"" + luogoDiNascita + "\", classe frequentata = " + classeFrequentata.toString()
-			+ ", anni di ripetizione = " + (anniDiRipetizione == 0 ? "null" : anniDiRipetizione)
-			+ ", lo studente " + (bocciato ? "" : "non") + " verra' bocciato quest'anno";
+		return "\tStudente " + nome + " " + cognome + "\n"
+		+ "\tnome: \"" + nome + "\"\tcognome: " + cognome + "\"\n"
+		+ "\tdata di nascita: " +  (dataDiNascita == null ? "null" : dataDiNascita.toString()) + "\tluogo di nascita: \"" + luogoDiNascita + "\"\n"
+		+ "\tclasse frequentata: " + classeFrequentata.toString() + "\tanni di ripetizione: " + (anniDiRipetizione == 0 ? "null" : anniDiRipetizione) + "\n"
+		+ "\tstato: lo studente " + (bocciato ? "" : "non") + " verra' bocciato quest'anno";
 	}
 
 	/**
@@ -245,5 +248,24 @@ public class Studente implements Serializable {
 				&& anniDiRipetizione == ((Studente)oggetto).anniDiRipetizione && bocciato == ((Studente)oggetto).bocciato;
         }
         return false;
+	}
+
+	/**
+	 * Ritorna se questa istanza di <code>Studente</code> e' uguale, ignorando il casing per l'attributo classe, ad un'altro oggetto inserito da input
+	 * 
+	 * @param oggetto oggetto da comparare a questa
+     * @return <code>true</code> se l'oggetto rappresenta una istanza <code>Studente</code> equivalente a questa, ignorando il case della classe, <code>false</code> in caso contrario
+	 */
+	public boolean equalsIgnoreCaseClasse(Object oggetto)
+	{
+		if (this == oggetto) {
+			return true;
+		}
+		if (oggetto instanceof Studente) {
+			return nome.equals(((Studente)oggetto).nome) && cognome.equals(((Studente)oggetto).cognome) && dataDiNascita.equals(((Studente)oggetto).dataDiNascita)
+			&& luogoDiNascita.equals(((Studente)oggetto).luogoDiNascita) && classeFrequentata.equalsIgnoreCase(((Studente)oggetto).classeFrequentata) 
+			&& anniDiRipetizione == ((Studente)oggetto).anniDiRipetizione && bocciato == ((Studente)oggetto).bocciato;
+		}
+		return false;
 	}
 }

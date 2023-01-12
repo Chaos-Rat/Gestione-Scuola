@@ -1,7 +1,7 @@
 /**
  * Classe Menu, fornisce un menu di base.
  * 
- * @version 1.5 (6-1-2023)
+ * @version 1.6 (12-1-2023)
  * @author Adnaan Juma
  * @author Matteo Del Checcolo
  * @author Lorenzo Freccero
@@ -112,6 +112,29 @@ public class Menu {
 			} catch (NumberFormatException exception) {
 				System.out.print(formatoInvalido + " (Suggerimento: il numero massimo di anni e' 127)\n\t");
 				inputValido = false;
+			}
+		} while (!inputValido);
+
+		System.out.print("\tInserire se lo studente e' in stato di bocciatura per quest'anno (vecchio stato: " + (nuovoStudente.isBocciato() ? "" : "non ") + "bocciato) (si/no): ");
+		do {
+			input = sc.nextLine();
+			if (input.isEmpty()) {
+				break;
+			}
+
+			switch (input) {
+				case "si":
+					nuovoStudente.setBocciato(true);
+					inputValido = true;
+					break;
+				case "no":
+					nuovoStudente.setBocciato(false);
+					inputValido = true;
+					break;
+				default:
+					System.out.println(formatoInvalido);
+					System.out.print("\t");
+					inputValido = false;
 			}
 		} while (!inputValido);
 
@@ -350,7 +373,7 @@ public class Menu {
 							System.out.print("\nPiu' di uno studente trovato!\n");
 
 							for (int i = 0; i < risultato.length; i++) {
-								System.out.print("\n\t[" + i + "] " + risultato[i].toString() + "\n");
+								System.out.print("\n[" + i + "] " + risultato[i].toString() + "\n");
 							}
 
 							System.out.print("\nQuale dei " + risultato.length + " studenti vuole modificare? ");
@@ -373,6 +396,7 @@ public class Menu {
 							System.out.print("\nSe non si desidera cambiare un certo campo, lasciarlo vuoto (premere direttamente invio).\n\n");
 
 							nuovoStudente = ottieniNuoveCredenziali(risultato[scelta], sc, formatoInvalido);
+
 						}
 
 						/* Modifica e salvataggio */
@@ -380,7 +404,9 @@ public class Menu {
 						System.out.println("\nInformazioni studente modificate con successo!");
 						richiediSalvataggio(gestore, pathSalvataggio, sc, formatoInvalido);
 					} catch (StudenteNonTrovatoException exception) {
-						System.out.println("\nNessuno studente con tali credenziali trovato nella lista. ");
+						System.out.println("\nNessuno studente con tali credenziali trovato nella lista.");
+					} catch (StudenteGiaEsistenteException exception) {
+						System.out.println("\nLe credenziali fornite corrispondono a quelle di un'altro studente all'interno della lista. Lo studente non verra' aggiunto alla lista.");
 					} catch (FileNotFoundException exception) {
 						System.out.println(erroreFile);
 					} catch (IOException exception) {
@@ -409,12 +435,12 @@ public class Menu {
 						if (risultato.length == 1) {
 							scelta = 0;
 							System.out.print("\nStudente trovato!\n\n");
-							System.out.println("\t" + risultato[0].toString());
+							System.out.println(risultato[0].toString());
 						} else {
 							System.out.print("\nPiu' di uno studente trovato!\n");
 
 							for (int i = 0; i < risultato.length; i++) {
-								System.out.print("\n\t[" + i + "] " + risultato[i].toString() + "\n");
+								System.out.print("\n[" + i + "] " + risultato[i].toString() + "\n");
 							}
 
 							System.out.print("\nQuale dei " + risultato.length + " studenti vuoi eliminare? ");
@@ -471,7 +497,7 @@ public class Menu {
 					System.out.print(">Visualizza lista studenti\n\n");
 
 					for (Studente studente : gestore.getListaStudenti()) {
-						System.out.print("\n\t" + studente.toString() + "\n");
+						System.out.print("\n" + studente.toString() + "\n");
 					}
 
 					attendiInvio(sc);
@@ -576,7 +602,7 @@ public class Menu {
 							System.out.print("\nPiu' di uno studente trovato!\n");
 
 							for (int i = 0; i < risultato.length; i++) {
-								System.out.print("\n\t[" + i + "] " + risultato[i].toString() + "\n");
+								System.out.print("\n[" + i + "] " + risultato[i].toString() + "\n");
 							}
 
 							System.out.print("\nQuale dei " + risultato.length + " studenti si vuole bocciare? ");
@@ -622,6 +648,8 @@ public class Menu {
 						} while (!inputValido);
 					} catch (StudenteNonTrovatoException exception) {
 						System.out.println("\nNessuno studente con tali credenziali trovato nella lista. ");
+					} catch (StudenteGiaEsistenteException exception) {
+						// Impossibile
 					} catch (FileNotFoundException exception) {
 						System.out.println(erroreFile);
 					} catch (IOException exception) {
@@ -663,6 +691,9 @@ public class Menu {
 						}
 					} while (!inputValido);
 
+					attendiInvio(sc);
+					cls();
+
 					break;
 				} case 10: {
 					System.out.print(">Salva lista studenti\n\n");
@@ -675,11 +706,14 @@ public class Menu {
 						System.out.println(erroreScrittura);
 					}
 
+					attendiInvio(sc);
+					cls();
+
 					break;
 				} case 11: {
 					System.out.print(">Carica lista studenti\n\n");
 
-					System.out.print("Desideri salvare la lista degli studenti sul file di salvataggio? (si/no): ");
+					System.out.print("Desideri caricare la lista degli studenti sul file di salvataggio? (si/no): ");
 					
 					try {
 						do {
@@ -704,6 +738,9 @@ public class Menu {
 					} catch (ClassNotFoundException exception) {
 						System.out.println("Attenzione, il file di salvataggio non contiene dati della lista, essa non verra' caricata.");
 					}
+
+					attendiInvio(sc);
+					cls();
 
 					break;
 				} case 12: {
