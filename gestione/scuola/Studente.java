@@ -214,12 +214,12 @@ public class Studente implements Serializable {
 	}
 
 	/**
-     * Converte questo oggetto in formato <code>String</code>
+	 * Converte questo oggetto in formato <code>String</code>
 	 * in un formato adeguato per essere stampato nel menu
 	 * 
-     * @return una rappresentazione di questo oggetto in <code>String</code>
+	 * @return una rappresentazione di questo oggetto in <code>String</code>
 	 * @see gestione.scuola.Menu
-     */
+	 */
 	@Override
 	public String toString()
 	{
@@ -231,30 +231,30 @@ public class Studente implements Serializable {
 	}
 
 	/**
-     * Ritorna se questa istanza di <code>Studente</code> e' uguale ad un'altro oggetto inserito da input
-     * 
-     * @param oggetto oggetto da comparare a questa
-     * @return <code>true</code> se l'oggetto rappresenta una istanza <code>Studente</code> equivalente a questa, <code>false</code> in caso contrario
-     */
+	 * Ritorna se questa istanza di <code>Studente</code> e' uguale ad un'altro oggetto inserito da input
+	 * 
+	 * @param oggetto oggetto da comparare a questa
+	 * @return <code>true</code> se l'oggetto rappresenta una istanza <code>Studente</code> equivalente a questa, <code>false</code> in caso contrario
+	 */
 	@Override
 	public boolean equals(Object oggetto)
 	{
 		if (this == oggetto) {
-            return true;
-        }
-        if (oggetto instanceof Studente) {
-            return nome.equals(((Studente)oggetto).nome) && cognome.equals(((Studente)oggetto).cognome) && dataDiNascita.equals(((Studente)oggetto).dataDiNascita)
+			return true;
+		}
+		if (oggetto instanceof Studente) {
+			return nome.equals(((Studente)oggetto).nome) && cognome.equals(((Studente)oggetto).cognome) && dataDiNascita.equals(((Studente)oggetto).dataDiNascita)
 				&& luogoDiNascita.equals(((Studente)oggetto).luogoDiNascita) && classeFrequentata.equals(((Studente)oggetto).classeFrequentata) 
 				&& anniDiRipetizione == ((Studente)oggetto).anniDiRipetizione && bocciato == ((Studente)oggetto).bocciato;
-        }
-        return false;
+		}
+		return false;
 	}
 
 	/**
 	 * Ritorna se questa istanza di <code>Studente</code> e' uguale, ignorando il casing per l'attributo classe, ad un'altro oggetto inserito da input
 	 * 
 	 * @param oggetto oggetto da comparare a questa
-     * @return <code>true</code> se l'oggetto rappresenta una istanza <code>Studente</code> equivalente a questa, ignorando il case della classe, <code>false</code> in caso contrario
+	 * @return <code>true</code> se l'oggetto rappresenta una istanza <code>Studente</code> equivalente a questa, ignorando il case della classe, <code>false</code> in caso contrario
 	 */
 	public boolean equalsIgnoreCaseClasse(Object oggetto)
 	{

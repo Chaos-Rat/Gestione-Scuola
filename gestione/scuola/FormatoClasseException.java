@@ -9,5 +9,5 @@
 package gestione.scuola;
 
 public class FormatoClasseException extends Exception {
-    private static final long serialVersionUID = -852499383782689710L;
+	private static final long serialVersionUID = -852499383782689710L;
 }

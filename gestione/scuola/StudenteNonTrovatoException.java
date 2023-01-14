@@ -8,5 +8,5 @@
 package gestione.scuola;
 
 public class StudenteNonTrovatoException extends Exception {
-    private static final long serialVersionUID = 249958585278751834L;
+	private static final long serialVersionUID = 249958585278751834L;
 }

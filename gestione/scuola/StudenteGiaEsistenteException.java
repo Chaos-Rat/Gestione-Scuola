@@ -9,5 +9,5 @@
 package gestione.scuola;
 
 public class StudenteGiaEsistenteException extends Exception {
-    private static final long serialVersionUID = -8167479367608696726L;
+	private static final long serialVersionUID = -8167479367608696726L;
 }
