@@ -43,7 +43,8 @@ import gestione.salvataggio.GestoreSalvataggio;
 	 * 
 	 * @return copia della lista studenti
 	 */
-	public Studente[] getListaStudenti() {
+	public Studente[] getListaStudenti()
+	{
 		return listaStudenti.toArray(new Studente[0]);
 	}
 
@@ -172,7 +173,9 @@ import gestione.salvataggio.GestoreSalvataggio;
 		for (Studente studente : getClasse(classe)) {
 			try {
 				eliminaStudente(studente);
-			} catch (StudenteNonTrovatoException exception) {} // verra tirata prima ClasseNonTrovataException
+			} catch (StudenteNonTrovatoException exception) {
+				// verra tirata prima ClasseNonTrovataException	
+			}
 		}
 	}
 

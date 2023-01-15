@@ -133,17 +133,19 @@ public class Classe implements Serializable {
 	 */
 	public static Classe parse(String stringa) throws FormatoClasseException
 	{
+		String stringaNumerica = "";
+		byte parteNumerica = 0;
+		
+		String stringaLetterale = "";
+		
+		int i = 0;
+
 		if (stringa == null) {
 			throw new FormatoClasseException();
 		}
 
 		/* Parse dell'anno */
-		String stringaNumerica = "";
-		byte parteNumerica = 0;
-
-		int i;
-		
-		for (i = 0; i < stringa.length() && (stringa.charAt(i) >= '0' && stringa.charAt(i) <= '9'); i++) {
+		for (; i < stringa.length() && (stringa.charAt(i) >= '0' && stringa.charAt(i) <= '9'); i++) {
 			stringaNumerica += stringa.charAt(i);
 		}
 
@@ -158,7 +160,6 @@ public class Classe implements Serializable {
 		}
 
 		/* Parse della sezione */
-		String stringaLetterale = "";
 
 		for (; i < stringa.length(); i++) {
 			if (!(stringa.charAt(i) >= 'A' && stringa.charAt(i) <= 'Z' || stringa.charAt(i) >= 'a' && stringa.charAt(i) <= 'z')) {
