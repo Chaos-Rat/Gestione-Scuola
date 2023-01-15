@@ -1,6 +1,6 @@
-# Gestione-Scuola
+# Gestione Scuola
  Applicazione per la gestione degli studenti all'interno di un'istituto scolastico
-
+ 
 ## Installazione
 Scaricare il file `.jar` dalla release che si vuole, o cliccare [qui](https://github.com/ErPincioNudo/Gestione-Scuola/releases/latest) per quella più recente.
 
@@ -22,3 +22,5 @@ Il programma permette di creare un elenco di studenti per la vostra scuola, nell
 - @LoreFrecce 
 - @ErPincioNudo 
 - @delchedh 
+
+![Twitch the rat](https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/a/a5/Skin_Splash_Crime_City_Twitch.jpg/revision/latest?cb=20191212175740)
