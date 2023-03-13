@@ -211,6 +211,7 @@ import gestione.salvataggio.GestoreSalvataggio;
 			} else { // Studente bocciato
 				Studente copia = new Studente(listaStudenti.get(n));
 				copia.setBocciato(false); // Non ha avanzato l'anno, ma per il prossimo anno non sara' piu' in stato di bocciatura
+				copia.setAnniDiRipetizione((byte)(copia.getAnniDiRipetizione() + 1));
 				listaStudenti.set(n, copia);
 			}
 
