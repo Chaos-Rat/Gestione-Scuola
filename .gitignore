@@ -27,4 +27,4 @@ replay_pid*
 *.bin
 
 # javadoc
-gestione/javadoc
+*/javadoc
